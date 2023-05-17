@@ -23,6 +23,12 @@ int main(int argc, char* argv[]) {
         std::cout << balin.get_executable_name() << "\n";
         std::cout << "C_Compiler: " << balin.get_c_compiler();
         std::cout << "\nCPP_Compiler: " << balin.get_cpp_compiler();
+        std::cout << "\nVariables:\n"; 
+        std::vector<std::pair<std::string, std::string>> vars = balin.get_variables();
+        for(const auto& pair : vars) {
+            std::cout << "\t"<< pair.first  << " -> " << pair.second << "\n";
+        }
+        
 
 
         return 0;

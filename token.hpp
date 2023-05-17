@@ -10,6 +10,7 @@ enum class Token{
     Executable,
     CPP_Compiler,
     C_Compiler,
+    Variable,
     Unknown
 };
 

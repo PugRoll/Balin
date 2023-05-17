@@ -3,10 +3,9 @@
 #include <fstream>
 #include <sstream>
 #include <iostream>
-
-
-
-
+#include <regex>
+#include <algorithm>
+#include <cctype>
 
 
 BalinxParser::BalinxParser(const std::string& filename) : file_(filename), filename_(filename) {}
@@ -44,6 +43,9 @@ bool BalinxParser::parse() {
                 case Token::CPP_Compiler :
                     success = handle_cpp_compiler(line);
                     break;
+                case Token::Variable :
+                    success = addVariable(line);
+                    break;
                 //If token is found, assume the Token is unknown
                 default :
                     break;
@@ -51,6 +53,15 @@ bool BalinxParser::parse() {
             }
 
         }
+
+/**
+ *  var target balinx_parser.hpp
+ *  [target] -> balinx_parser.hpp(string)
+ *  arr[1] = target* -> string
+ *
+ */
+
+
     }
 
     return true;
@@ -109,10 +120,44 @@ bool BalinxParser::handle_cpp_compiler(const std::string& line) {
     
 }
 
+bool BalinxParser::addVariable(const std::string& line) {
+    std::regex varRegex(R"(\$([a-zA-Z0-9]+)(?:\s+([^\$]+))?(?=\$|\s*$))");
+    std::smatch varMatch;
+    if(std::regex_search(line, varMatch, varRegex)) {
+        std::string varIdent = varMatch[1];
+        std::string varValue;
+        if(varMatch.size() > 2) {
+            varValue = varMatch[2];
+
+            varValue.erase(varValue.begin(), std::find_if(varValue.begin(),  varValue.end(), [](int ch) {
+                        return !std::isspace(ch);
+            }));
+            varValue.erase(std::find_if(varValue.rbegin() , varValue.rend(), [](int ch) {
+                        return !std::isspace(ch);
+            }).base(), varValue.end());
+
+        }
+        variables.push_back(std::make_pair(varIdent, varValue));
+        std::cout << "Success\n";
+        return true;
+    }
+    return false;
 
 
+/**    auto pos = line.find("var");
+    if(pos != std::string::npos) {
+        std::string varIdent = line.substr(pos + 3);
+        //std::cout << varIdent << "\n";
+        auto newPos = line.find(varIdent);
+        std::string varValue = line.substr(newPos + varIdent.size());
+        size_t firstNonWhiteSpace = varValue.find_first_not_of(" \t");
+        if(firstNonWhiteSpace != std::string::npos) {
+            varValue.erase(0, firstNonWhiteSpace);
+        }
+        //std::cout << varValue << "\n";
+        variables.push_back(std::make_pair(varIdent, varValue)); 
+        return true;
+    }
+    return false; */
 
-
-
-
-
+}

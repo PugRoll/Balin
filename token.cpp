@@ -1,4 +1,5 @@
 #include "token.hpp"
+#include <iostream>
 
 constexpr unsigned int hash(const char* str)  {
     unsigned int hashValue = 0;
@@ -11,6 +12,10 @@ constexpr unsigned int hash(const char* str)  {
 
 Token getTokenValue(const std::string& token) {
     Token result = Token::Unknown;
+    if(token.empty() || token[0] == '$') {
+        result = Token::Variable;
+    }
+    else {
         switch(hash(token.c_str())) {
             case hash("version") :
                 result = Token::Version;
@@ -27,6 +32,7 @@ Token getTokenValue(const std::string& token) {
             default:
                 break;
         }
+    }
 
     return result;
 }
