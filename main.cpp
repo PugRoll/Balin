@@ -21,6 +21,8 @@ int main(int argc, char* argv[]) {
         }
         std::cout << "\nExecutable Name: ";
         std::cout << balin.get_executable_name() << "\n";
+        std::cout << "C_Compiler: " << balin.get_c_compiler();
+        std::cout << "\nCPP_Compiler: " << balin.get_cpp_compiler();
 
 
         return 0;

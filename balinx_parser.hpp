@@ -14,15 +14,20 @@ public:
     const std::string& get_executable_name() const {return executable_name_; }
     const std::vector<int>& get_version_number() const {return version_number_; }
     const std::string& get_filename() const  {return filename_; }
-
+    const std::string& get_c_compiler() const {return c_compiler; }
+    const std::string& get_cpp_compiler() const {return cpp_compiler; }
 private: 
     bool handle_version(const std::string& line);
     bool handle_executable(const std::string& line);
+    bool handle_c_compiler(const std::string& line);
+    bool handle_cpp_compiler(const std::string& line);
 
     std::ifstream file_;
     std::string executable_name_;
     std::vector<int> version_number_;
     std::string filename_;
+    std::string c_compiler;
+    std::string cpp_compiler;
 };
 //Function to parse the build file
 

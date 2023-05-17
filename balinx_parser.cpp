@@ -38,6 +38,13 @@ bool BalinxParser::parse() {
                 case Token::Executable :
                     success = handle_executable(line);
                     break;
+                case Token::C_Compiler :
+                    success = handle_c_compiler(line);
+                    break;
+                case Token::CPP_Compiler :
+                    success = handle_cpp_compiler(line);
+                    break;
+                //If token is found, assume the Token is unknown
                 default :
                     break;
 
@@ -79,6 +86,29 @@ bool BalinxParser::handle_version(const std::string& line) {
     }
     return true;
 }
+
+bool BalinxParser::handle_c_compiler(const std::string& line) {
+    auto pos = line.find("cc");
+    if(pos != std::string::npos) {
+        std::string cc_name = line.substr(pos + 2);
+        c_compiler = cc_name;
+        return true; 
+    }
+    return false;
+    
+}
+
+bool BalinxParser::handle_cpp_compiler(const std::string& line) {
+    auto pos = line.find("cppc");
+    if(pos != std::string::npos) {
+        std::string cpp_name = line.substr(pos + 4);
+        cpp_compiler = cpp_name;
+        return true; 
+    }
+    return false;
+    
+}
+
 
 
 
