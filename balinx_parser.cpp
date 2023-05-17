@@ -1,7 +1,13 @@
 #include "balinx_parser.hpp"
+#include "token.hpp"
 #include <fstream>
 #include <sstream>
 #include <iostream>
+
+
+
+
+
 
 BalinxParser::BalinxParser(const std::string& filename) : file_(filename), filename_(filename) {}
 
@@ -20,24 +26,23 @@ bool BalinxParser::parse() {
         std::istringstream iss(line);
         std::string token;
         if(std::getline(iss, token, ' ')) {
-            std::cout << "Current Token: " << token << "\n";
 
-            if(token == "version") {
-                if(handle_version(line)) {
-                    std::cout << "Success: Version number\n";
-                }
-                else {
-                    std::cout << "Error: Version number\n";
-                }
+            bool success = false;
+            std::string errorMsg = "";
+            Token tk = getTokenValue(token);
+
+            switch(tk) {
+                case Token::Version :
+                    success = handle_version(line);
+                    break;
+                case Token::Executable :
+                    success = handle_executable(line);
+                    break;
+                default :
+                    break;
+
             }
-            else if (token == "executable") {
-                if(handle_executable(line)) {
-                    std::cout << "Success: executable\n";
-                }
-                else {
-                    std::cout << "Error: executable\n";
-                }
-            }
+
         }
     }
 
@@ -74,6 +79,10 @@ bool BalinxParser::handle_version(const std::string& line) {
     }
     return true;
 }
+
+
+
+
 
 
 
