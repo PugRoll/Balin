@@ -46,6 +46,9 @@ bool BalinxParser::parse() {
                 case Token::Variable :
                     success = addVariable(line);
                     break;
+                case Token::Print : 
+                    printMessage(line);
+                    break;
                 //If token is found, assume the Token is unknown
                 default :
                     break;
@@ -144,20 +147,22 @@ bool BalinxParser::addVariable(const std::string& line) {
     return false;
 
 
-/**    auto pos = line.find("var");
-    if(pos != std::string::npos) {
-        std::string varIdent = line.substr(pos + 3);
-        //std::cout << varIdent << "\n";
-        auto newPos = line.find(varIdent);
-        std::string varValue = line.substr(newPos + varIdent.size());
-        size_t firstNonWhiteSpace = varValue.find_first_not_of(" \t");
-        if(firstNonWhiteSpace != std::string::npos) {
-            varValue.erase(0, firstNonWhiteSpace);
-        }
-        //std::cout << varValue << "\n";
-        variables.push_back(std::make_pair(varIdent, varValue)); 
-        return true;
-    }
-    return false; */
-
 }
+
+
+void BalinxParser::printMessage(const std::string& line) {
+    
+    
+    size_t last = line.find_last_of("\"");
+    size_t first = line.find("\"");
+    std::string msg = "";
+    if(first != std::string::npos && last != std::string::npos && last > first) {
+        msg = line.substr(first + 1, last - first - 1);
+    }
+    else {
+        std::cout << "ERROR\n";
+    }
+
+    std::cout << msg << "\n";
+}
+

@@ -11,6 +11,7 @@ enum class Token{
     CPP_Compiler,
     C_Compiler,
     Variable,
+    Print,
     Unknown
 };
 

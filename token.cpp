@@ -29,6 +29,9 @@ Token getTokenValue(const std::string& token) {
             case hash("cppc") :
                 result = Token::CPP_Compiler;
                 break;
+            case hash("print") :
+                result = Token::Print;
+                break;
             default:
                 break;
         }

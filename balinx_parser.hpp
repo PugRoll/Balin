@@ -23,6 +23,7 @@ private:
     bool handle_c_compiler(const std::string& line);
     bool handle_cpp_compiler(const std::string& line);
     bool addVariable(const std::string& line);
+    void printMessage(const std::string& line);
 
     std::ifstream file_;
     std::string executable_name_;
