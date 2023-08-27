@@ -33,6 +33,7 @@ int main(int argc, char* argv[]) {
         for(const std::string& ite : str) {
             std::cout << "\t" << ite;
         }
+        std::cout << "\nFlags: ";
         
 
 

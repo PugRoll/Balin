@@ -52,6 +52,9 @@ bool BalinxParser::parse() {
                 case Token::Include :
                     success = handle_includes(line);
                     break;
+                case Token::Flag :
+                    success = handle_flags(line);
+                    break;
                 //If token is found, assume the Token is unknown
                 default :
                     break;
@@ -60,16 +63,7 @@ bool BalinxParser::parse() {
 
         }
 
-/**
- *  var target balinx_parser.hpp
- *  [target] -> balinx_parser.hpp(string)
- *  arr[1] = target* -> string
- *
- */
-
-
     }
-
     return true;
 }
 
@@ -77,7 +71,7 @@ bool BalinxParser::handle_executable(const std::string& line) {
     size_t pos = line.find("executable"); 
     if(pos != std::string::npos) {
         std::string exec_name = line.substr(pos + 11);
-        executable_name_ = exec_name;
+        executable_name_ = resolveString(exec_name);
         return true;
     }
     return false;
@@ -108,7 +102,7 @@ bool BalinxParser::handle_c_compiler(const std::string& line) {
     auto pos = line.find("cc");
     if(pos != std::string::npos) {
         std::string cc_name = line.substr(pos + 2);
-        c_compiler = cc_name;
+        c_compiler = resolveString(cc_name);
         return true; 
     }
     return false;
@@ -119,7 +113,7 @@ bool BalinxParser::handle_cpp_compiler(const std::string& line) {
     auto pos = line.find("cppc");
     if(pos != std::string::npos) {
         std::string cpp_name = line.substr(pos + 4);
-        cpp_compiler = cpp_name;
+        cpp_compiler = resolveString(cpp_name);
         return true; 
     }
     return false;
@@ -154,27 +148,36 @@ bool BalinxParser::handle_includes(const std::string& line) {
     size_t pos = line.find("include");
     if(pos != std::string::npos) {
         std::string tmpInclude = line.substr(pos + 7);
-        includes.push_back(tmpInclude);
+        includes.push_back(resolveString(tmpInclude));
         return true;
     }
     return false;
 }
 
+bool BalinxParser::handle_flags(const std::string& line) {
+    size_t pos = line.find("flags");
+    if(pos != std::string::npos)
+        std::string tmpFlag = line.substr(pos + 5);
+        
+
+}
+
 
 
 void BalinxParser::printMessage(const std::string& line) {
-    
-    
+    std::cout << resolveString(line) << "\n";
+}
+
+std::string BalinxParser::resolveString(const std::string& line) {
     size_t last = line.find_last_of("\"");
     size_t first = line.find("\"");
     std::string msg = "";
     if(first != std::string::npos && last != std::string::npos && last > first) {
         msg = line.substr(first + 1, last - first - 1);
+        return msg;
     }
     else {
         std::cout << "ERROR\n";
+        return NULL;
     }
-
-    std::cout << msg << "\n";
 }
-

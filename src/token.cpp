@@ -35,6 +35,9 @@ Token getTokenValue(const std::string& token) {
             case hash("include") :
                 result = Token::Include;
                 break;
+            case hash("flags") :
+                result = Token::Flag;
+                break;
             default:
                 break;
         }
