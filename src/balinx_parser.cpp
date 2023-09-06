@@ -138,7 +138,6 @@ bool BalinxParser::addVariable(const std::string& line) {
 
         }
         variables.push_back(std::make_pair(varIdent, varValue));
-        std::cout << "Success\n";
         return true;
     }
     return false;
@@ -156,10 +155,19 @@ bool BalinxParser::handle_includes(const std::string& line) {
 
 bool BalinxParser::handle_flags(const std::string& line) {
     size_t pos = line.find("flags");
-    if(pos != std::string::npos)
+    if(pos != std::string::npos) {
         std::string tmpFlag = line.substr(pos + 5);
-        
+        tmpFlag = resolveString(tmpFlag);
+        std::istringstream iss(tmpFlag);
+        std::string flag;
 
+        while(iss >> flag) {
+            flags.push_back(flag);
+        }
+
+        return true;
+    }
+    return false;
 }
 
 
@@ -175,9 +183,10 @@ std::string BalinxParser::resolveString(const std::string& line) {
     if(first != std::string::npos && last != std::string::npos && last > first) {
         msg = line.substr(first + 1, last - first - 1);
         return msg;
+        
     }
     else {
         std::cout << "ERROR\n";
-        return NULL;
     }
+    return "";
 }

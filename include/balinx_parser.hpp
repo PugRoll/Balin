@@ -18,7 +18,7 @@ public:
     const std::string& get_cpp_compiler() const {return cpp_compiler; }
     const std::vector<std::pair<std::string, std::string>>& get_variables() const {return variables; }
     const std::vector<std::string>& get_includes() const {return includes; }
-    const std::vector<char*>& get_flags() const {return flags; } 
+    const std::vector<std::string>& get_flags() const {return flags; } 
 private: 
     bool handle_version(const std::string& line);
     bool handle_executable(const std::string& line);
@@ -39,10 +39,7 @@ private:
     std::string cpp_compiler;
     std::vector<std::pair<std::string, std::string>> variables;
     std::vector<std::string> includes;
-    std::vector<char*> flags;
-
-
-
+    std::vector<std::string> flags;
 
 };
 //Function to parse the build file
