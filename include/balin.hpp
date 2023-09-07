@@ -9,13 +9,14 @@ class Balin {
 public:
     explicit Balin(const std::string& filename);
     bool compile();
+    void processFile();
+    const std::string& get_filename() const {return filename_; }
 
 
 
 private: 
-
-
     bool setVars();
+    std::string substituteVars(const std::string input, const std::vector<std::pair<std::string, std::string>>& vars);
 
     std::ifstream file_;
     std::string filename_;

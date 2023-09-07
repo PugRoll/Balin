@@ -1,10 +1,11 @@
+$home /home/Patrick/dev/balin
+
 cppc "g++" 
 executable "balin"
 version "0.0.1"
-include "./include/balinx_parser.hpp"
+include "$home/include/ $home/src/*"
 flags "I o"
 
 
-$myVar =  8
 
 

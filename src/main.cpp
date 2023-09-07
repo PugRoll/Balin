@@ -11,8 +11,10 @@ int main(int argc, char* argv[]) {
 
     if(balin.compile()) {
         return 0;
+        std::cout << "SUCCESS\n";
     }
     else {
+        std::cout << "FAILURE\n";
         return 1;
     }
 
