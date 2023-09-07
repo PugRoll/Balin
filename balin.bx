@@ -1,0 +1,10 @@
+cppc "g++" 
+executable "balin"
+version "0.0.1"
+include "./include/balinx_parser.hpp"
+flags "I o"
+
+
+$myVar =  8
+
+
