@@ -55,6 +55,9 @@ bool BalinxParser::parse() {
                 case Token::Flag :
                     success = handle_flags(line);
                     break;
+                case Token::Debug :
+                    success = debug_file(line);
+                    break;
                 //If token is found, assume the Token is unknown
                 default :
                     break;
@@ -167,6 +170,17 @@ bool BalinxParser::handle_flags(const std::string& line) {
 
         return true;
     }
+    return false;
+}
+
+bool BalinxParser::debug_file(const std::string& line) {
+    size_t pos = line.find("debug");
+    if(pos != std::string::npos) {
+        std::string tmpFilename = line.substr(pos + 5);
+        addDebugFlags.push_back(resolveString(tmpFilename));
+        return true;
+    }
+    std::cerr << "Error in debug_file\n";
     return false;
 }
 

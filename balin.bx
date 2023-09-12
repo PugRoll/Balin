@@ -1,10 +1,14 @@
 $home /home/Patrick/dev/balin
+$debugThis /home/Patrick/dev/balin
 
 cppc "g++" 
 executable "balin"
+debug "$debugThis/src/balin.cpp" 
 version "0.0.1"
 include "$home/include/ $home/src/*"
 flags "I o"
+
+
 
 
 

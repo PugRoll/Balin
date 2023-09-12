@@ -25,6 +25,7 @@ private:
     std::string cpp_compiler;
     std::vector<std::string> includes;
     std::vector<std::string> flags;
+    std::vector<std::string> debugs;
     BalinxParser parser;
 
 

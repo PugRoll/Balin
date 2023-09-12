@@ -14,6 +14,7 @@ enum class Token{
     Include,
     Flag,
     Print,
+    Debug,
     Unknown
 };
 

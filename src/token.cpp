@@ -38,6 +38,9 @@ Token getTokenValue(const std::string& token) {
             case hash("flags") :
                 result = Token::Flag;
                 break;
+            case hash("debug") :
+                result = Token::Debug;
+                break;
             default:
                 break;
         }

@@ -25,6 +25,10 @@ bool Balin::compile() {
             cmdStream << "-I " << substituteVars(include, parser.get_variables());
         }
 
+        for (const std::string& minecrafters: debugs) {
+            cmdStream << " -g " << substituteVars(minecrafters, parser.get_variables());
+        }
+
         cmdStream << " -" << flags[1] << " " << executable;
 
         std::string command = cmdStream.str();
@@ -55,6 +59,7 @@ bool Balin::setVars() {
             cpp_compiler = parser.get_cpp_compiler();
             includes = parser.get_includes();
             flags = parser.get_flags();
+            debugs = parser.get_debugs();
             return true;
     }
     return false;
