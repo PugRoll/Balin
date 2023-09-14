@@ -14,6 +14,7 @@ Balin::Balin(const std::string& filename)
 
 bool Balin::compile() {
     if(setVars()) {
+        bool doCompile = false;
         std::ostringstream cmdStream;
         cmdStream << cpp_compiler << " ";
 
@@ -38,7 +39,7 @@ bool Balin::compile() {
         int result = std::system(command.c_str());
 
         //lock for whether I want to compile or not
-        if(true) {
+        if(finalCheck()) {
             if(result != 0) {
                 std::cerr << "Command failed to execute\n";
                 return false;
@@ -56,7 +57,13 @@ bool Balin::compile() {
 bool Balin::setVars() {
     if(parser.parse()) {
             executable = parser.get_executable_name();
+
+            c_compiler = parser.get_c_compiler();
+            validCCompiler = (testCompiler(c_compiler, "c"));
+
             cpp_compiler = parser.get_cpp_compiler();
+            Balin::validCppCompiler = (testCompiler(cpp_compiler, "c++"));
+
             includes = parser.get_includes();
             flags = parser.get_flags();
             debugs = parser.get_debugs();
@@ -93,12 +100,55 @@ void Balin::processFile() {
         }
 
         std::istringstream iss(line);
-        Balin::substituteVars(line, parser.get_variables());
-    }
-
-    
+        line = Balin::substituteVars(line, parser.get_variables());
+    }    
 }
 
+bool Balin::testCompiler(const std::string& compiler, const std::string lang){
+    if(compiler.empty()) {
+        std::cerr << "\t[INFO] No compiler specified for: " << lang << "\n";
+        return false; //In the case a compiler is not specified
+    }
 
+    std::ostringstream cmd;
 
+    cmd << compiler << " --version";
 
+    std::string gamerTime = cmd.str();
+    gamerTime = gamerTime + " > nul";
+    int result = std::system(gamerTime.c_str());
+    std::system("rm nul");
+    if(result != 0) {
+        std::cerr << "\t[ERROR] " << compiler << " failed to validate compiler\n";
+        return false;
+    }
+    else {
+        return true;
+    }
+}
+
+bool Balin::finalCheck() {
+    //Check to make sure they are empty strings
+    bool c_isNotEmpty = !c_compiler.empty();
+    bool cpp_isNotEmpty = !cpp_compiler.empty();
+
+    if(c_isNotEmpty && cpp_isNotEmpty) {
+        return true;
+    }
+
+    //More specific checks
+    if(!(c_isNotEmpty && cpp_isNotEmpty)) { //Both string values are empty
+        return false;
+    }
+    else {
+        if(!c_isNotEmpty && cpp_isNotEmpty && validCppCompiler) {
+            return true;
+        }
+        if(c_isNotEmpty && validCCompiler && !cpp_isNotEmpty) {
+            return false;
+        }
+    }
+
+    return false;
+
+}

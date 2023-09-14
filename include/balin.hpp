@@ -16,7 +16,10 @@ public:
 
 private: 
     bool setVars();
+    bool testCompiler(const std::string& compiler, const std::string lang);
+    bool finalCheck();
     std::string substituteVars(const std::string input, const std::vector<std::pair<std::string, std::string>>& vars);
+    
 
     std::ifstream file_;
     std::string filename_;
@@ -27,6 +30,10 @@ private:
     std::vector<std::string> flags;
     std::vector<std::string> debugs;
     BalinxParser parser;
+
+    bool doCompile;
+    bool validCCompiler;
+    bool validCppCompiler;
 
 
 
