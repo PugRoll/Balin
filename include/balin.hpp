@@ -20,8 +20,14 @@ private:
     bool finalCheck();
     std::string substituteVars(const std::string input, const std::vector<std::pair<std::string, std::string>>& vars);
     
+    void createBuildDirectory();
+    bool checkBuildDirectory();
+
+    void createCacheFile();
+    bool checkForCacheFile();
 
     std::ifstream file_;
+    std::ofstream cacheFile;
     std::string filename_;
     std::string executable;
     std::string c_compiler;
@@ -34,6 +40,7 @@ private:
     bool doCompile;
     bool validCCompiler;
     bool validCppCompiler;
+
 
 
 

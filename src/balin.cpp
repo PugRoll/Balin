@@ -3,6 +3,7 @@
 #include <fstream>
 #include <iostream>
 #include <sstream>
+#include <sys/stat.h>
 
 Balin::Balin(const std::string& filename) 
     : file_(filename), 
@@ -14,6 +15,8 @@ Balin::Balin(const std::string& filename)
 
 bool Balin::compile() {
     if(setVars()) {
+        //Go ahead and create the build directory
+        createBuildDirectory();
         bool doCompile = false;
         std::ostringstream cmdStream;
         cmdStream << cpp_compiler << " ";
@@ -46,6 +49,8 @@ bool Balin::compile() {
             }
             else {
                 std::cout << "Command executed successfully\n";
+                //Lets cache if we were successful
+                createCacheFile();
                 return true;
             }
         }
@@ -152,3 +157,48 @@ bool Balin::finalCheck() {
     return false;
 
 }
+
+
+
+void Balin::createBuildDirectory() {
+   const char* dir = "./build"; 
+   if(checkBuildDirectory()) {
+       std::cout << "Valid path\n";
+   }
+   else {
+       //If the directory does not exists let's create the directory
+       std::ostringstream buildCmd;
+       buildCmd << "mkdir " << dir;
+       std::system(buildCmd.str().c_str()); //convert to string then to c_str()
+   }
+}
+
+void Balin::createCacheFile() {
+    //TODO: Logic to hash and check if there is any changes between the last change and the previous
+    const char* cachePath = "./build/cache.bx";
+    if(checkForCacheFile()) {
+        //Cache file exists 
+    }
+    else { //Cache file does not exist or was deleted
+        Balin::cacheFile.open(cachePath);
+        cacheFile << "Make a cache file\n";
+    }
+    
+}
+
+bool Balin::checkBuildDirectory() {
+    struct stat sb;
+    return (stat("./build", &sb) == 0);
+}
+
+bool Balin::checkForCacheFile() {
+    struct stat sb;
+    return (stat("./build/cache.bx", &sb) == 0 && !(sb.st_mode &S_IFDIR));
+}
+
+
+
+
+
+
+
