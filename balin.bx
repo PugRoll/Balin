@@ -1,0 +1,15 @@
+$home /home/Patrick/dev/balin
+$debugThis /home/Patrick/dev/balin
+
+cc "gcc"
+cppc "g++" 
+executable "minecraft"
+version "0.0.1"
+include "$home/include/ $home/src/*"
+flags "I o"
+
+
+
+
+
+

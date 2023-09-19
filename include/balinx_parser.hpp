@@ -19,6 +19,7 @@ public:
     const std::vector<std::pair<std::string, std::string>>& get_variables() const {return variables; }
     const std::vector<std::string>& get_includes() const {return includes; }
     const std::vector<std::string>& get_flags() const {return flags; } 
+    const std::vector<std::string>& get_debugs() const {return addDebugFlags; }
 private: 
     bool handle_version(const std::string& line);
     bool handle_executable(const std::string& line);
@@ -28,6 +29,7 @@ private:
     bool handle_includes(const std::string& line);
     void printMessage(const std::string& line);
     bool handle_flags(const std::string& line);
+    bool debug_file(const std::string& line);
     std::string resolveString(const std::string& line);
 
 
@@ -38,6 +40,7 @@ private:
     std::string c_compiler;
     std::string cpp_compiler;
     std::vector<std::pair<std::string, std::string>> variables;
+    std::vector<std::string> addDebugFlags;
     std::vector<std::string> includes;
     std::vector<std::string> flags;
 
