@@ -26,6 +26,8 @@ private:
     void createCacheFile();
     bool checkForCacheFile();
 
+    bool checkDependencies();
+    bool checkAgainstDependencyList(const std::string dep);
     std::ifstream file_;
     std::ofstream cacheFile;
     std::string filename_;
@@ -35,6 +37,8 @@ private:
     std::vector<std::string> includes;
     std::vector<std::string> flags;
     std::vector<std::string> debugs;
+    std::vector<std::string> deps;
+
     BalinxParser parser;
 
     bool doCompile;

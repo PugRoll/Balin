@@ -1,5 +1,6 @@
 #include "../include/balin.hpp"
 #include "../include/balinx_parser.hpp"
+#include "../include/balin_common.hpp"
 #include <fstream>
 #include <iostream>
 #include <sstream>
@@ -23,6 +24,7 @@ bool Balin::compile() {
 
         //Let's substitue the variables
         processFile();
+        checkDependencies();
 
         //Iterate through vector
         for (const std::string& include : includes) {
@@ -33,6 +35,10 @@ bool Balin::compile() {
             cmdStream << " -g " << substituteVars(minecrafters, parser.get_variables());
         }
 
+
+        for (const std::string& dep : deps) {
+            cmdStream << " -L./build/" << dep << ".o";
+        }
         cmdStream << " -" << flags[1] << " " << executable;
 
         std::string command = cmdStream.str();
@@ -42,7 +48,7 @@ bool Balin::compile() {
         int result = std::system(command.c_str());
 
         //lock for whether I want to compile or not
-        if(finalCheck()) {
+        if(finalCheck()) { /* TODO: replace "false" with "finalcheck()" */
             if(result != 0) {
                 std::cerr << "Command failed to execute\n";
                 return false;
@@ -72,6 +78,7 @@ bool Balin::setVars() {
             includes = parser.get_includes();
             flags = parser.get_flags();
             debugs = parser.get_debugs();
+            deps = parser.get_deps();
             return true;
     }
     return false;
@@ -197,8 +204,58 @@ bool Balin::checkForCacheFile() {
 }
 
 
+bool Balin::checkDependencies() {
+    //We should check for the object file in the build directory, if it doesn't exist
+    //we should get if available
+    for(std::string dep : deps) {
+        if(checkAgainstDependencyList(dep)) {
+            return true;
+        }
+    }
+
+    
+   return false;
+}
 
 
+
+bool Balin::checkAgainstDependencyList(const std::string dep) {
+    std::ifstream file = std::ifstream("./balinDeps.txt");
+    std::string line;
+    std::string curr;
+
+    unsigned int hashLine;
+    unsigned int hashDep = hash(dep.c_str());
+
+    std::vector<std::string> tokens;
+
+    const char delimeter = ':';
+
+    while(std::getline(file, line)) {
+        if(line.empty()) {
+            std::cerr << "Dependency was not found\n";
+            return false;
+        }
+
+        std::istringstream iss(line);
+        std::string str;
+        while(getline(iss, str, delimeter)) {
+            tokens.push_back(str);        
+            /* Name of token is located at tokens[0]
+             * Location of token is located at tokens[1] */
+        }
+
+        //TODO: ADD proper functionality to this
+        //TODO: Check for valid dependency
+        //Copy the object file from the directory
+        std::ostringstream cmdStream;
+        cmdStream << "cp " << tokens[1] << tokens[0] <<".o ./build/";
+        std::system(cmdStream.str().c_str());
+    }
+
+
+    return false;
+}
 
 
 

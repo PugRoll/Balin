@@ -2,8 +2,8 @@
 #define TOKEN_H
 
 #include <string>
+#include "../include/balin_common.hpp"
 
-constexpr unsigned int hash(const char* str);
 
 enum class Token{
     Version,
@@ -15,6 +15,7 @@ enum class Token{
     Flag,
     Print,
     Debug,
+    Dependency,
     Unknown
 };
 

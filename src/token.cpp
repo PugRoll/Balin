@@ -1,16 +1,13 @@
 #include "../include/token.hpp"
+#include "../include/balin_common.hpp"
 #include <iostream>
 
-constexpr unsigned int hash(const char* str)  {
-    unsigned int hashValue = 0;
-    while(*str) {
-        hashValue = (hashValue << 5) + *str++;
-    }
 
-    return hashValue;
-}
+
+
 
 Token getTokenValue(const std::string& token) {
+    
     Token result = Token::Unknown;
     if(token.empty() || token[0] == '$') {
         result = Token::Variable;
@@ -40,6 +37,9 @@ Token getTokenValue(const std::string& token) {
                 break;
             case hash("debug") :
                 result = Token::Debug;
+                break;
+            case hash("dependency") :
+                result = Token::Dependency;
                 break;
             default:
                 break;

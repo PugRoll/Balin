@@ -58,6 +58,9 @@ bool BalinxParser::parse() {
                 case Token::Debug :
                     success = debug_file(line);
                     break;
+                case Token::Dependency :
+                    success = add_dependency(line);
+                    break;
                 //If token is found, assume the Token is unknown
                 default :
                     break;
@@ -204,3 +207,18 @@ std::string BalinxParser::resolveString(const std::string& line) {
     }
     return "";
 }
+
+
+bool BalinxParser::add_dependency(const std::string& line) {
+    const char* tmp = "dependency";
+    size_t pos = line.find("dependency");
+    if(pos != std::string::npos) {
+        std::string dep = line.substr(pos + sizeof(*tmp));
+        deps.push_back(resolveString(dep));
+        return true;
+    }
+    std::cerr << "Error in dependency function\n";
+    return false;
+}
+
+
