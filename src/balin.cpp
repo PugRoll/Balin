@@ -37,7 +37,7 @@ bool Balin::compile() {
 
 
         for (const std::string& dep : deps) {
-            cmdStream << " -L./build/" << dep << ".o";
+            cmdStream << " ./build/" << dep << ".o";
         }
         cmdStream << " -" << flags[1] << " " << executable;
 
@@ -220,7 +220,7 @@ bool Balin::checkDependencies() {
 
 
 bool Balin::checkAgainstDependencyList(const std::string dep) {
-    std::ifstream file = std::ifstream("./balinDeps.txt");
+    std::ifstream file = std::ifstream("/home/Patrick/.balin/balinDeps.txt");
     std::string line;
     std::string curr;
 
@@ -249,7 +249,7 @@ bool Balin::checkAgainstDependencyList(const std::string dep) {
         //TODO: Check for valid dependency
         //Copy the object file from the directory
         std::ostringstream cmdStream;
-        cmdStream << "cp " << tokens[1] << tokens[0] <<".o ./build/";
+        cmdStream << "cp " << tokens[1] << tokens[0] <<".o "<< tokens[1] << tokens[0] << ".hpp " << " ./build/ ";
         std::system(cmdStream.str().c_str());
     }
 
