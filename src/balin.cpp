@@ -248,14 +248,31 @@ bool Balin::checkAgainstDependencyList(const std::string dep) {
         //TODO: ADD proper functionality to this
         //TODO: Check for valid dependency
         //Copy the object file from the directory
-        std::ostringstream cmdStream;
-        cmdStream << "cp " << tokens[1] << tokens[0] <<".o "<< tokens[1] << tokens[0] << ".hpp " << " ./build/ ";
-        std::system(cmdStream.str().c_str());
+        //std::ostringstream cmdStream;
+        //cmdStream << "cp " << tokens[1] << tokens[0] <<".o "<< tokens[1] << tokens[0] << ".hpp " << " ./build/ ";
+        curlAndUnzip(tokens[0].c_str());
     }
 
 
     return false;
 }
 
+
+void Balin::curlAndUnzip(const char* depName) {
+    std::ostringstream cmd;
+    const char* serverName = "http://localhost:8080/downloads/";
+
+    //Command to copy the file
+    cmd << "curl --url " << serverName << depName << ".tar.gz" << " --output ./build/" << depName << ".tar.gz";
+    std::system(cmd.str().c_str());
+    //std::cout << cmd.str().c_str() << "\n";
+
+    //unzip the tar.gz file
+    cmd.str("");
+    cmd << "tar -xf ./build/" << depName << ".tar.gz" << " -C ./build/";
+    std::system(cmd.str().c_str());
+    //std::cout << cmd.str().c_str() << "\n";
+
+}
 
 

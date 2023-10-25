@@ -20,6 +20,8 @@ private:
     bool finalCheck();
     std::string substituteVars(const std::string input, const std::vector<std::pair<std::string, std::string>>& vars);
     
+    void curlAndUnzip(const char* depName);
+
     void createBuildDirectory();
     bool checkBuildDirectory();
 
