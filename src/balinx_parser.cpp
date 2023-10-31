@@ -14,6 +14,7 @@ bool BalinxParser::parse() {
     std::ifstream file = std::ifstream(BalinxParser::get_filename());
     if(!file.is_open()) {
         std::cerr << "Error: Build file could not be opened\n";
+        return false;
     }
 
     std::string line;

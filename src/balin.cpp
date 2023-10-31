@@ -1,6 +1,7 @@
 #include "../include/balin.hpp"
 #include "../include/balinx_parser.hpp"
 #include "../include/balin_common.hpp"
+#include "../include/cache.hpp"
 #include <fstream>
 #include <iostream>
 #include <sstream>
@@ -19,6 +20,10 @@ bool Balin::compile() {
         //Go ahead and create the build directory
         createBuildDirectory();
         bool doCompile = false;
+
+        ParsedData *cacheData;
+
+
         std::ostringstream cmdStream;
         cmdStream << cpp_compiler << " ";
 
@@ -57,6 +62,8 @@ bool Balin::compile() {
                 std::cout << "Command executed successfully\n";
                 //Lets cache if we were successful
                 createCacheFile();
+                //writeToCacheFile("cc", hash(parser.get_c_compiler().c_str()));
+
                 return true;
             }
         }
@@ -248,8 +255,6 @@ bool Balin::checkAgainstDependencyList(const std::string dep) {
         //TODO: ADD proper functionality to this
         //TODO: Check for valid dependency
         //Copy the object file from the directory
-        //std::ostringstream cmdStream;
-        //cmdStream << "cp " << tokens[1] << tokens[0] <<".o "<< tokens[1] << tokens[0] << ".hpp " << " ./build/ ";
         curlAndUnzip(tokens[0].c_str());
     }
 
@@ -274,5 +279,4 @@ void Balin::curlAndUnzip(const char* depName) {
     //std::cout << cmd.str().c_str() << "\n";
 
 }
-
 
