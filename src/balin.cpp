@@ -62,7 +62,8 @@ bool Balin::compile() {
                 std::cout << "Command executed successfully\n";
                 //Lets cache if we were successful
                 createCacheFile();
-                //writeToCacheFile("cc", hash(parser.get_c_compiler().c_str()));
+                writeToCacheFile("cc", hash(parser.get_c_compiler().c_str()));
+                writeToCacheFile("cppc", hash(parser.get_cpp_compiler().c_str()));
 
                 return true;
             }

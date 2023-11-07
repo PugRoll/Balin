@@ -3,7 +3,7 @@ $debugThis /home/Patrick/dev/balin
 
 cc "gcc"
 cppc "g++" 
-executable "balin"
+executable "test_ex"
 version "0.0.1"
 include "$home/include/ $home/src/*"
 flags "I o"
