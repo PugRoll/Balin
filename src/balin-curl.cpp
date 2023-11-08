@@ -45,7 +45,7 @@ unsigned int id_getWithName(std::string name){
 
     struct wantedData jsonresponse;
 
-    balinParseJson(response, &jsonresponse.id, &jsonresponse.filename);
+    balinParseJson(name, response, &jsonresponse.id, &jsonresponse.filename);
 
     std::cout << "ID: " <<  jsonresponse.id << "\r\n";
     std::cout << "Filename: " <<  jsonresponse.filename << "\r\n";
@@ -53,7 +53,7 @@ unsigned int id_getWithName(std::string name){
     return jsonresponse.id;
 }
 //TODO: fix functionality to get with the name
-bool balinParseJson(std::string response, unsigned int* id, std::string* name) { 
+bool balinParseJson(std::string target, std::string response, unsigned int* id, std::string* name) { 
     Json::Value root;
     Json::CharReaderBuilder reader;
     std::istringstream responseStream(response);
@@ -62,6 +62,14 @@ bool balinParseJson(std::string response, unsigned int* id, std::string* name) {
             //Ensure we have a valid reponse:
             if(root.isArray() && root.size() > 0) {
                 const Json::Value& firstItem = root[0];
+
+                const Json::Value& curr = root;
+    
+                for(int i = 0; i < curr.size(); i++) {                 
+                    const Json::Value& currItem = curr[i];
+                    std::cout << "GAMER: " << currItem[0].asInt() << "\r\n";
+                    std::cout << "GAMER NAME: " << currItem[1].asString() << "\r\n";
+                }
 
                 if(firstItem.isArray() && firstItem.size() >=2) {
                     *id = firstItem[0].asInt();
