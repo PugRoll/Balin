@@ -16,7 +16,10 @@ static size_t WriteResponseCallback(void* contents, size_t size, size_t nmemb, v
 }
 
 unsigned int id_getWithName(std::string name){
-    unsigned int id;
+    struct wantedData {
+        unsigned int id; 
+        std::string filename;
+    } wantedData;
     CURL* curl;
     CURLcode res;
 
@@ -40,9 +43,48 @@ unsigned int id_getWithName(std::string name){
 
     curl_easy_cleanup(curl);
 
-    id = 9999999;
-    return id;
+    struct wantedData jsonresponse;
+
+    balinParseJson(response, &jsonresponse.id, &jsonresponse.filename);
+
+    std::cout << "ID: " <<  jsonresponse.id << "\r\n";
+    std::cout << "Filename: " <<  jsonresponse.filename << "\r\n";
+    
+    return jsonresponse.id;
 }
+//TODO: fix functionality to get with the name
+bool balinParseJson(std::string response, unsigned int* id, std::string* name) { 
+    Json::Value root;
+    Json::CharReaderBuilder reader;
+    std::istringstream responseStream(response);
+    std::string errs;
+    if(Json::parseFromStream(reader, responseStream, &root, &errs)) {
+            //Ensure we have a valid reponse:
+            if(root.isArray() && root.size() > 0) {
+                const Json::Value& firstItem = root[0];
+
+                if(firstItem.isArray() && firstItem.size() >=2) {
+                    *id = firstItem[0].asInt();
+                    *name = firstItem[1].asString();
+                } 
+                else {
+                    std::cerr << "Json structure does not match expected form\r\n";
+                    return false;
+                }
+            }
+            else {
+                std::cerr << "Json response is empty or not an array\r\n";
+                return false;
+            }
+        }
+        else {
+            std::cerr << "Json parsing failed\r\n";
+            return false;
+        }
+        return true;
+}
+
+
 
 
 int main() {

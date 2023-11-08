@@ -14,5 +14,6 @@ static size_t WriteResponseCallback(void* contents, size_t size, size_t nmemb, v
 
 
 unsigned int id_getWithName(std::string name);
+bool balinParseJson(std::string reponse, unsigned int* id, std::string* name);
 
 #endif
