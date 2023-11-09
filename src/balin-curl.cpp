@@ -82,11 +82,14 @@ void downloadArchiveFromDB(unsigned int id, std::string packageName) {
     res = curl_easy_perform(curl);
     if(res == CURLE_OK) {
         std::cout << "\t[INFO]: " << filename << " downloaded succesfully\r\n";
+        moveToBuildDirectory(filename);
     }
     else {
         std::cerr << "\t[ERROR]: " << filename << " download unsuccesfull\r\n";
         std::cerr << "\t[ERROR]: curl_easy_perform() failed: " << curl_easy_strerror(res) << "\r\n";
     }
+
+
 
 
     out_file.close(); //good practice for the gamers
@@ -106,7 +109,7 @@ bool balinParseJson(std::string target, std::string response, unsigned int* id, 
 
                 const Json::Value& curr = root;
 
-                int compareResult = 999;
+                int compareResult = BALIN_CURL_ERROR; //assume we won't find it
     
                 for(int i = 0; i < curr.size(); i++) {                 
                     const Json::Value& currItem = curr[i];
@@ -132,10 +135,9 @@ bool balinParseJson(std::string target, std::string response, unsigned int* id, 
 }
 
 
-
-
-int main() {
-    int id = id_getWithName("balinSubtract"); 
-    downloadArchiveFromDB(id, "balinSubtract");
-    return 0;
+void moveToBuildDirectory(std::string archiveName) {
+    std::ostringstream cmd;
+    cmd << "mv " << archiveName << "./build/" << archiveName;
 }
+
+

@@ -2,6 +2,7 @@
 #include "../include/balinx_parser.hpp"
 #include "../include/balin_common.hpp"
 #include "../include/cache.hpp"
+#include "../include/balin-curl.hpp"
 #include <fstream>
 #include <iostream>
 #include <sstream>
@@ -256,7 +257,16 @@ bool Balin::checkAgainstDependencyList(const std::string dep) {
         //TODO: ADD proper functionality to this
         //TODO: Check for valid dependency
         //Copy the object file from the directory
-        curlAndUnzip(tokens[0].c_str());
+        //tokens[0] is the name of the dependency
+        unsigned int id = id_getWithName(tokens[0]);
+
+        if(id == BALIN_CURL_ERROR) {
+            std::cout << "\t[ERROR] " << tokens[0] << "could not be found\r\n"; 
+            return false;
+        }
+
+        downloadArchiveFromDB(id, tokens[0]);
+
     }
 
 
@@ -264,20 +274,9 @@ bool Balin::checkAgainstDependencyList(const std::string dep) {
 }
 
 
-void Balin::curlAndUnzip(const char* depName) {
+void unzipArchive(const char* depName) {
     std::ostringstream cmd;
-    const char* serverName = "http://localhost:8080/downloads/";
-
-    //Command to copy the file
-    cmd << "curl --url " << serverName << depName << ".tar.gz" << " --output ./build/" << depName << ".tar.gz";
+    cmd << "tar -xzvf ./" << depName << ".tar.gz " << "-C ./build/";
     std::system(cmd.str().c_str());
-    //std::cout << cmd.str().c_str() << "\n";
-
-    //unzip the tar.gz file
-    cmd.str("");
-    cmd << "tar -xf ./build/" << depName << ".tar.gz" << " -C ./build/";
-    std::system(cmd.str().c_str());
-    //std::cout << cmd.str().c_str() << "\n";
-
 }
 

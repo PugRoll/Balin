@@ -3,7 +3,7 @@
 #include <iostream>
 #include <vector>
 
-size_t split(const std::string line, std::vector<std::string> &str, const char delim);
+//size_t balin_split(const std::string line, std::vector<std::string> &str, const char delim);
 
 constexpr unsigned int hash(const char* str)  {
     unsigned int hashValue = 0;

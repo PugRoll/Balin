@@ -1,11 +1,30 @@
 #include "../include/cache.hpp"
-#include "../include/balin_common.hpp"
 #include "../include/token.hpp"
 #include <sstream>
 
 const char COMMENT_CHARACTER = '#';
 const char VALUE_SPLIT_CHARACTER = ':';
 const char DELIMITER_CHARACTER = '>';    
+
+
+size_t balin_split(const std::string &line, std::vector<std::string> &str, const char delim) {
+    size_t pos = line.find(delim);
+    size_t initial_pos = 0;
+
+    str.clear();
+
+    while(pos != std::string::npos) {
+        str.push_back(line.substr(initial_pos, pos - initial_pos));
+        initial_pos = pos + 1;
+
+        pos = line.find(delim, initial_pos);
+    }
+
+
+    str.push_back(line.substr(initial_pos, std::min(pos, str.size()) - initial_pos + 1));
+
+    return str.size();
+}
 
 struct ParsedData {
     bool c_compiler_valid;
@@ -54,12 +73,12 @@ ParsedData currentCacheData() {
     std::istringstream iss(line);
 
     std::vector<std::string> strs;
-    size_t sizeOfData = split(line, strs, DELIMITER_CHARACTER); 
+    size_t sizeOfData = balin_split(line, strs, DELIMITER_CHARACTER); 
 
     std::vector<std::string> parts;
     size_t tmp;
     for(const std::string &str : strs) {
-        tmp = split(str, parts , VALUE_SPLIT_CHARACTER);
+        tmp = balin_split(str, parts , VALUE_SPLIT_CHARACTER);
         if(tmp == 2) {
             assignValueWithIdentifier(curr, parts[0], hash(parts[1].c_str()));
         }
@@ -80,17 +99,17 @@ void writeToCacheFile(const std::string str, unsigned int hashValue) {
 }
 
 
-void assignValueWithIdentifier(ParsedData *pd, const std::string identifier, unsigned int value) {
+void assignValueWithIdentifier(ParsedData &pd, const std::string identifier, unsigned int value) {
 
     switch(hash(identifier.c_str())) {
         case hash("cc") :
-            pd->c_compiler = value;
+            pd.c_compiler = value;
             break;
         case hash("cppc") :
-            pd->cpp_compiler = value;
+            pd.cpp_compiler = value;
             break;
         case hash("includes") :
-            pd->includes = value;
+            pd.includes = value;
             break;
         default :
             std::cerr << "\t[ERROR] Unknown identifier\r\n";

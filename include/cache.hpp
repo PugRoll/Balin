@@ -17,6 +17,8 @@ ParsedData currentCacheData();
 
     
 
+size_t balin_split(const std::string &line, std::vector<std::string> &str, const char delim);
+
 
 
 #endif

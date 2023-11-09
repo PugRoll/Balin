@@ -1,10 +1,14 @@
 #ifndef BALIN_CURL_H
 #define BALIN_CURL_H
 
+
 #include<fstream>
 #include<iostream>
 #include<curl/curl.h>
 #include<json/json.h>
+
+
+const int BALIN_CURL_ERROR = -1;
 
 
 const std::string url = "http://127.0.0.1:5000";
@@ -45,5 +49,7 @@ unsigned int id_getWithName(std::string name);
 bool balinParseJson(std::string target, std::string reponse, unsigned int* id, std::string* name);
 
 void downloadArchiveFromDB(unsigned int id, std::string packageName);
+
+void moveToBuildDirectory(std::string archiveName);
 
 #endif
