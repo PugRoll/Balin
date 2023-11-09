@@ -45,14 +45,55 @@ unsigned int id_getWithName(std::string name){
 
     struct wantedData jsonresponse;
 
-    balinParseJson(name, response, &jsonresponse.id, &jsonresponse.filename);
-
-    std::cout << "ID: " <<  jsonresponse.id << "\r\n";
-    std::cout << "Filename: " <<  jsonresponse.filename << "\r\n";
+    if (balinParseJson(name, response, &jsonresponse.id, &jsonresponse.filename)) {
+        std::cout << "Found: " << name << "\r\n";
+//        std::cout << "ID: " <<  jsonresponse.id << "\r\n";
+//        std::cout << "Filename: " <<  jsonresponse.filename << "\r\n";
+        return jsonresponse.id;
+    }
+    else {
+        std::cout << "\t[INFO] " << name << " could not be found\r\n";
+        return -1;
+    }
     
-    return jsonresponse.id;
 }
-//TODO: fix functionality to get with the name
+
+
+void downloadArchiveFromDB(unsigned int id, std::string packageName) {
+    CURL* curl;
+    CURLcode res;
+
+    curl = curl_easy_init();
+    if(!curl) {
+        std::cerr << "\t[ERROR]Error initializing";
+    }
+
+    std::string filename = packageName + ".tar.gz";
+    std::ofstream out_file(filename, std::ios::binary);
+
+    std::string query = url + "/get_file/" + std::to_string(id);
+
+    curl_easy_setopt(curl, CURLOPT_URL,query.c_str()); 
+
+    //Use the write data callback function
+    curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteDataCallback);
+    curl_easy_setopt(curl, CURLOPT_WRITEDATA , &out_file); 
+
+    res = curl_easy_perform(curl);
+    if(res == CURLE_OK) {
+        std::cout << "\t[INFO]: " << filename << " downloaded succesfully\r\n";
+    }
+    else {
+        std::cerr << "\t[ERROR]: " << filename << " download unsuccesfull\r\n";
+        std::cerr << "\t[ERROR]: curl_easy_perform() failed: " << curl_easy_strerror(res) << "\r\n";
+    }
+
+
+    out_file.close(); //good practice for the gamers
+
+}
+
+
 bool balinParseJson(std::string target, std::string response, unsigned int* id, std::string* name) { 
     Json::Value root;
     Json::CharReaderBuilder reader;
@@ -64,20 +105,18 @@ bool balinParseJson(std::string target, std::string response, unsigned int* id, 
                 const Json::Value& firstItem = root[0];
 
                 const Json::Value& curr = root;
+
+                int compareResult = 999;
     
                 for(int i = 0; i < curr.size(); i++) {                 
                     const Json::Value& currItem = curr[i];
                     std::cout << "GAMER: " << currItem[0].asInt() << "\r\n";
                     std::cout << "GAMER NAME: " << currItem[1].asString() << "\r\n";
-                }
-
-                if(firstItem.isArray() && firstItem.size() >=2) {
-                    *id = firstItem[0].asInt();
-                    *name = firstItem[1].asString();
-                } 
-                else {
-                    std::cerr << "Json structure does not match expected form\r\n";
-                    return false;
+                    compareResult = currItem[1].compare(target);
+                    if(compareResult == 0) { 
+                        *id = currItem[0].asInt();
+                        return true;
+                    }
                 }
             }
             else {
@@ -89,13 +128,14 @@ bool balinParseJson(std::string target, std::string response, unsigned int* id, 
             std::cerr << "Json parsing failed\r\n";
             return false;
         }
-        return true;
+        return false;
 }
 
 
 
 
 int main() {
-    id_getWithName("balinAdd.tar.gz");
+    int id = id_getWithName("balinSubtract"); 
+    downloadArchiveFromDB(id, "balinSubtract");
     return 0;
 }
