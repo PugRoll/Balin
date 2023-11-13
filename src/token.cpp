@@ -41,6 +41,9 @@ Token getTokenValue(const std::string& token) {
             case hash("dependency") :
                 result = Token::Dependency;
                 break;
+            case hash("library") :
+                result = Token::Library;
+                break;
             default:
                 break;
         }

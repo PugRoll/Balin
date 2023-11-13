@@ -137,7 +137,8 @@ bool balinParseJson(std::string target, std::string response, unsigned int* id, 
 
 void moveToBuildDirectory(std::string archiveName) {
     std::ostringstream cmd;
-    cmd << "mv " << archiveName << "./build/" << archiveName;
+    cmd << "mv " << archiveName << " ./build/" << archiveName;
+    std::system(cmd.str().c_str());
 }
 
 

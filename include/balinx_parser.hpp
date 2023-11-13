@@ -21,6 +21,7 @@ public:
     const std::vector<std::string>& get_flags() const {return flags; } 
     const std::vector<std::string>& get_debugs() const {return addDebugFlags; }
     const std::vector<std::string>& get_deps() const {return deps; }
+    const std::vector<std::string>& get_libs() const {return libs; }
 private: 
     bool handle_version(const std::string& line);
     bool handle_executable(const std::string& line);
@@ -32,6 +33,7 @@ private:
     bool handle_flags(const std::string& line);
     bool debug_file(const std::string& line);
     bool add_dependency(const std::string& line);
+    bool add_library(const std::string& line);
     std::string resolveString(const std::string& line);
 
 
@@ -46,6 +48,8 @@ private:
     std::vector<std::string> includes;
     std::vector<std::string> flags;
     std::vector<std::string> deps;
+    std::vector<std::string> libs;
+
 
 };
 //Function to parse the build file

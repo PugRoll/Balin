@@ -47,6 +47,10 @@ bool Balin::compile() {
         }
         cmdStream << " -" << flags[1] << " " << executable;
 
+        for (const std::string& lib : libs) {
+            cmdStream << " -l" << substituteVars(lib, parser.get_variables());
+        }
+
         std::string command = cmdStream.str();
 
         std::cout << "\nCommand to be executed:\n" << command << "\n";
@@ -88,6 +92,7 @@ bool Balin::setVars() {
             flags = parser.get_flags();
             debugs = parser.get_debugs();
             deps = parser.get_deps();
+            libs = parser.get_libs();
             return true;
     }
     return false;
@@ -266,6 +271,7 @@ bool Balin::checkAgainstDependencyList(const std::string dep) {
         }
 
         downloadArchiveFromDB(id, tokens[0]);
+        unzipArchive(tokens[0].c_str());
 
     }
 
@@ -274,9 +280,9 @@ bool Balin::checkAgainstDependencyList(const std::string dep) {
 }
 
 
-void unzipArchive(const char* depName) {
+void Balin::unzipArchive(const char* depName) {
     std::ostringstream cmd;
-    cmd << "tar -xzvf ./" << depName << ".tar.gz " << "-C ./build/";
+    cmd << "tar -xzvf ./build/" << depName << ".tar.gz " << "-C ./build/";
     std::system(cmd.str().c_str());
 }
 

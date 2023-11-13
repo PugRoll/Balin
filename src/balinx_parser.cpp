@@ -62,6 +62,8 @@ bool BalinxParser::parse() {
                 case Token::Dependency :
                     success = add_dependency(line);
                     break;
+                case Token::Library :
+                    success = add_library(line);
                 //If token is found, assume the Token is unknown
                 default :
                     break;
@@ -223,3 +225,15 @@ bool BalinxParser::add_dependency(const std::string& line) {
 }
 
 
+bool BalinxParser::add_library(const std::string& line) {
+    const char* tmp = "library";
+    size_t pos = line.find("library");
+    if(pos != std::string::npos) {
+        std::string lib = line.substr(pos + sizeof(*tmp));
+        libs.push_back(resolveString(lib));
+        return true;
+    }
+    std::cerr << "Error in Library function\n";
+    return false;
+
+}

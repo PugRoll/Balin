@@ -3,12 +3,13 @@ $debugThis /home/Patrick/dev/balin
 
 cc "gcc"
 cppc "g++" 
-executable "test_ex"
+executable "balin"
 version "0.0.1"
 include "$home/include/ $home/src/*"
 flags "I o"
 
-
+library "curl"
+library "jsoncpp"
 
 
 

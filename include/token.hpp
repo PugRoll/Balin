@@ -12,6 +12,7 @@ enum class Token{
     C_Compiler,
     Variable,
     Include,
+    Library,
     Flag,
     Print,
     Debug,

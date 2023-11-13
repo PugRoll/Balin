@@ -40,12 +40,15 @@ private:
     std::vector<std::string> flags;
     std::vector<std::string> debugs;
     std::vector<std::string> deps;
+    std::vector<std::string> libs;
 
     BalinxParser parser;
 
     bool doCompile;
     bool validCCompiler;
     bool validCppCompiler;
+
+
 
 
 
