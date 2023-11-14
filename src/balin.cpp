@@ -22,8 +22,7 @@ bool Balin::compile() {
         createBuildDirectory();
         bool doCompile = false;
 
-        ParsedData *cacheData;
-
+        ParsedData cacheData = currentCacheData();
 
         std::ostringstream cmdStream;
         cmdStream << cpp_compiler << " ";
@@ -69,7 +68,6 @@ bool Balin::compile() {
                 createCacheFile();
                 writeToCacheFile("cc", hash(parser.get_c_compiler().c_str()));
                 writeToCacheFile("cppc", hash(parser.get_cpp_compiler().c_str()));
-
                 return true;
             }
         }
@@ -158,6 +156,10 @@ bool Balin::finalCheck() {
     bool c_isNotEmpty = !c_compiler.empty();
     bool cpp_isNotEmpty = !cpp_compiler.empty();
 
+    if(checkWithCache(cpp_compiler) || checkWithCache(c_compiler)) {
+        return true;
+    }
+
     if(c_isNotEmpty && cpp_isNotEmpty) {
         return true;
     }
@@ -202,7 +204,8 @@ void Balin::createCacheFile() {
     }
     else { //Cache file does not exist or was deleted
         Balin::cacheFile.open(cachePath);
-        cacheFile << "Make a cache file\n";
+        cacheFile << "#11/14 Make a cache file\n";
+        cacheFile.close();
     }
     
 }
@@ -284,5 +287,11 @@ void Balin::unzipArchive(const char* depName) {
     std::ostringstream cmd;
     cmd << "tar -xzvf ./build/" << depName << ".tar.gz " << "-C ./build/";
     std::system(cmd.str().c_str());
+}
+
+
+bool Balin::checkWithCache(const std::string curr) {
+    return ((hash(curr.c_str()) == (getValueWithIdentifier(curr))
+        ));
 }
 

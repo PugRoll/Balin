@@ -1,53 +1,36 @@
 #include "../include/cache.hpp"
 #include "../include/token.hpp"
 #include <sstream>
+#include <iostream>
 
 const char COMMENT_CHARACTER = '#';
 const char VALUE_SPLIT_CHARACTER = ':';
 const char DELIMITER_CHARACTER = '>';    
 
+ParsedData currentCache;
 
 size_t balin_split(const std::string &line, std::vector<std::string> &str, const char delim) {
     size_t pos = line.find(delim);
     size_t initial_pos = 0;
-
     str.clear();
-
     while(pos != std::string::npos) {
         str.push_back(line.substr(initial_pos, pos - initial_pos));
         initial_pos = pos + 1;
 
         pos = line.find(delim, initial_pos);
     }
-
-
     str.push_back(line.substr(initial_pos, std::min(pos, str.size()) - initial_pos + 1));
 
     return str.size();
 }
 
-struct ParsedData {
-    bool c_compiler_valid;
-    bool cpp_compiler_valid;
-    bool includes_valid;
-    /**
-     * Some values will be stored as integers and hashed to save time  
-     */
-    unsigned int c_compiler;
-    unsigned int cpp_compiler;
-    unsigned int includes;
-    unsigned int executable;
-    unsigned int version;
-    unsigned int flags;
-};
-
 bool checkforExistingCache() {
-    std::ifstream f("../build/cache.bx");
+    std::ifstream f("./build/cache.bx");
     return f.good(); 
 }
 
 void createCacheFile() {
-    std::ofstream outfile("../build/cache.bx");
+    std::ofstream outfile("./build/cache.bx");
     outfile.close();
 }
 
@@ -62,7 +45,10 @@ ParsedData currentCacheData() {
         return curr;
     }    
 
-    std::ifstream file("../build/cache.bx");
+    std::ifstream file("./build/cache.bx");
+    if(!file.is_open()) {
+        std::cerr << "\t[ERROR] file did not open is function: 'currentCacheData'\r\n";
+    }
     std::string line;
     if(!std::getline(file, line)) {
         //false means that the file is empty
@@ -87,15 +73,21 @@ ParsedData currentCacheData() {
         
     } 
 
-
+    currentCache = curr;
     return curr;
 }
 
 
 void writeToCacheFile(const std::string str, unsigned int hashValue) {
-    std::ofstream cacheOut("../build/cache.bx");  
-    cacheOut << str << VALUE_SPLIT_CHARACTER << hashValue << DELIMITER_CHARACTER;
-    cacheOut.close();
+    std::ofstream cacheOut;
+    cacheOut.open("./build/cache.bx");
+    if(cacheOut.is_open()) {
+        cacheOut << str << VALUE_SPLIT_CHARACTER << hashValue << DELIMITER_CHARACTER;
+        cacheOut.close();
+    }
+    else {
+        std::cerr << "\t[ERROR] Error opening cache.bx file\r\n";
+    }
 }
 
 
@@ -115,6 +107,25 @@ void assignValueWithIdentifier(ParsedData &pd, const std::string identifier, uns
             std::cerr << "\t[ERROR] Unknown identifier\r\n";
             break;
     }
+}
+
+
+unsigned int getValueWithIdentifier(const std::string identifier) {
+    switch(hash(identifier.c_str())) {
+            case hash("cc") :
+                return currentCache.c_compiler;
+                break;
+            case hash("cppc") :
+                return currentCache.cpp_compiler;
+                break;
+            case hash("includes") :
+                return currentCache.includes;
+                break;
+            default :
+                std::cerr << "\t[ERROR] Unknown identifier\r\n";
+                break;
+        }
+    return -1;
 }
 
 

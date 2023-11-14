@@ -27,6 +27,7 @@ private:
 
     void createCacheFile();
     bool checkForCacheFile();
+    bool checkWithCache(const std::string curr);
 
     bool checkDependencies();
     bool checkAgainstDependencyList(const std::string dep);
