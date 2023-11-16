@@ -20,6 +20,10 @@ enum class Token{
     Unknown
 };
 
+/**
+ * Functionalilty: return the enumerated value of Token
+ * @Param: string token -> the string version of token
+ */
 Token getTokenValue(const std::string& token);
 
 
