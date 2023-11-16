@@ -1,15 +1,19 @@
 #include "../include/balin.hpp"
+#include "../include/balin_common.hpp"
 #include <iostream> 
 #include <getopt.h>
 
+
+
 int main(int argc, char* argv[]) {
+    initFlags();
     bool debugMode = false;
     std::string filename = "build.bx";
     int opt;
     while((opt = getopt(argc, argv, "d")) != -1) {
         switch(opt) {
             case 'd': 
-                debugMode = true;
+                setDebugFlag(true);
                 break;
         }
 
@@ -19,6 +23,8 @@ int main(int argc, char* argv[]) {
     }
 
     Balin balin(filename);
+    balinInfo("HELLO FROM INFO FUNCTION\n");
+
 
     if(balin.compile()) {
         return 0;

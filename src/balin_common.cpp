@@ -19,3 +19,34 @@
 //    return str.size();
 //}
 
+
+balin_flags bFlags;
+
+void initFlags() {
+    bFlags.infoFlag = true;
+    bFlags.debugFlag = false;
+}
+
+void balinInfo(const char* str) {
+    if(bFlags.infoFlag) {
+        std::cout << "\t[INFO]: " << str << "\r\n";
+    }
+}
+
+void balinDebug(const char* str) {
+    if(bFlags.debugFlag) {
+        std::cout << "\t[DEBUG]: " << str << "\r\n";
+    }
+}
+
+void balinError(const char* error) {
+    std::cerr<< "\t[ERROR]: " << error << "\r\n";
+}
+
+
+void setInfoFlag(bool value) {
+    bFlags.infoFlag = value;
+}
+void setDebugFlag(bool value) {
+    bFlags.debugFlag = value;
+}

@@ -17,4 +17,21 @@ constexpr unsigned int hash(const char* str)  {
     return hashValue;
 }
 
+struct balin_flags {
+    bool infoFlag;
+    bool debugFlag;
+}extern bFlags;
+
+
+
+void balinInfo(const char* str);
+void balinDebug(const char* str);
+void balinError(const char* error);
+
+void setInfoFlag(bool value);
+void setDebugFlag(bool value);
+
+void initFlags();
+
+
 #endif

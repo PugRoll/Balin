@@ -52,18 +52,21 @@ bool Balin::compile() {
 
         std::string command = cmdStream.str();
 
-        std::cout << "\nCommand to be executed:\n" << command << "\n";
+        std::ostringstream minecraft;
+        minecraft << "\nCommand to be executed:\n" << command;
+        balinDebug(minecraft.str().c_str());
+
 
         int result = std::system(command.c_str());
 
         //lock for whether I want to compile or not
         if(finalCheck()) { /* TODO: replace "false" with "finalcheck()" */
             if(result != 0) {
-                std::cerr << "Command failed to execute\n";
+                balinError("Command failed to execute");
                 return false;
             }
             else {
-                std::cout << "Command executed successfully\n";
+                balinError("Command executed successfully");
                 //Lets cache if we were successful
                 createCacheFile();
                 writeToCacheFile("cc", hash(parser.get_c_compiler().c_str()));
@@ -104,10 +107,14 @@ std::string Balin::substituteVars(const std::string input, const std::vector<std
             std::string variablePlaceholder = "$" + pair.first;
             size_t pos = result.find(variablePlaceholder);
             while(pos != std::string::npos) {
-                std::cout << "\t[Found]: " << variablePlaceholder << "\n";
+                std::ostringstream str;
+                str << "\t[Found]: " << variablePlaceholder;
+                balinInfo(str.str().c_str());
+                str.clear();
                 result.replace(pos, variablePlaceholder.length(), pair.second);
                 pos = result.find(variablePlaceholder);
-                std:: cout << "\t[Replacing with]: " << pair.second << "\n";
+                str << "\t[Replacing with]: " << pair.second << "\n";
+                balinInfo(str.str().c_str());
             }
         }
         return result;
@@ -130,7 +137,9 @@ void Balin::processFile() {
 
 bool Balin::testCompiler(const std::string& compiler, const std::string lang){
     if(compiler.empty()) {
-        std::cerr << "\t[INFO] No compiler specified for: " << lang << "\n";
+        std::ostringstream str;
+        str << "No compiler specified for: " + lang;
+        balinInfo(str.str().c_str());
         return false; //In the case a compiler is not specified
     }
 
@@ -143,7 +152,9 @@ bool Balin::testCompiler(const std::string& compiler, const std::string lang){
     int result = std::system(gamerTime.c_str());
     std::system("rm nul");
     if(result != 0) {
-        std::cerr << "\t[ERROR] " << compiler << " failed to validate compiler\n";
+        std::ostringstream str;
+        str << compiler << " failed to validate compiler\n";
+        balinError(str.str().c_str());
         return false;
     }
     else {
@@ -186,7 +197,7 @@ bool Balin::finalCheck() {
 void Balin::createBuildDirectory() {
    const char* dir = "./build"; 
    if(checkBuildDirectory()) {
-       std::cout << "Valid path\n";
+       balinInfo("Valid path");
    }
    else {
        //If the directory does not exists let's create the directory
@@ -250,7 +261,7 @@ bool Balin::checkAgainstDependencyList(const std::string dep) {
 
     while(std::getline(file, line)) {
         if(line.empty()) {
-            std::cerr << "Dependency was not found\n";
+            balinError("Dependency was not found");
             return false;
         }
 
@@ -269,7 +280,9 @@ bool Balin::checkAgainstDependencyList(const std::string dep) {
         unsigned int id = id_getWithName(tokens[0]);
 
         if(id == BALIN_CURL_ERROR) {
-            std::cout << "\t[ERROR] " << tokens[0] << "could not be found\r\n"; 
+            std::ostringstream str;
+            str << tokens[0] << "could not be found"; 
+            balinError(str.str().c_str());
             return false;
         }
 
