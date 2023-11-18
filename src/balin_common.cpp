@@ -1,5 +1,102 @@
 #include "../include/balin_common.hpp"
 
+
+
+
+
+balin_flags bFlags;
+
+
+std::string resolveString(const std::string& line) {
+    size_t last = line.find_last_of("\"");
+    size_t first = line.find("\"");
+    std::string msg = "";
+    if(first != std::string::npos && last != std::string::npos && last > first) {
+        msg = line.substr(first + 1, last - first - 1);
+        return msg;
+        
+    }
+    else {
+        balinError("Unresolved string error");
+    }
+    return "";
+}
+
+
+
+void initFlags() {
+    bFlags.infoFlag = true;
+    bFlags.debugFlag = false;
+}
+
+void balinInfo(const char* str) {
+    if(bFlags.infoFlag) {
+        std::cout << "\t[INFO]: " << str << "\r\n";
+    }
+}
+
+void balinDebug(const char* str) {
+    if(bFlags.debugFlag) {
+        std::cout << balin_color::YELLOW <<"\t[DEBUG]: " << balin_color::RESET <<str << "\r\n";
+    }
+}
+
+void balinError(const char* error) {
+    std::cerr << balin_color::RED << "\t[ERROR]: " << balin_color::RESET << error << "\r\n";
+}
+
+void balinInfo(const std::string& str) {
+    if(bFlags.infoFlag) {
+        std::cout << "\t[INFO]: " << str << "\r\n";
+    }
+}
+
+void balinDebug(const std::string& str) {
+    if(bFlags.debugFlag) {
+        std::cout << balin_color::YELLOW << "\t[DEBUG]: " << balin_color::RESET << str << "\r\n";
+    }
+}
+
+void balinError(const std::string& error) {
+    std::cerr << balin_color::RED << "\t[ERROR]: " << balin_color::RESET << error << "\r\n";
+}
+
+void balinInfo(const std::ostringstream& oss) {
+    if(bFlags.infoFlag) {
+        std::cout << "\t[INFO]: " << oss.str() << "\r\n";
+    }
+}
+
+void balinDebug(const std::ostringstream& oss) {
+    if(bFlags.debugFlag) {
+        std::cout << balin_color::YELLOW << "\t[DEBUG]: " << balin_color::RESET << oss.str() << "\r\n";
+    }
+}
+
+void balinError(const std::ostringstream& oss_error) {
+    std::cerr << balin_color::RED << "\t[ERROR]: " << balin_color::RESET << oss_error.str() << "\r\n";
+}
+
+
+void setInfoFlag(bool value) {
+    bFlags.infoFlag = value;
+}
+void setDebugFlag(bool value) {
+    bFlags.debugFlag = value;
+}
+
+void balinSuccess() {
+    if(bFlags.infoFlag) {
+        std::cout << balin_color::OKGREEN << "\t[INFO] Success:\r\n" << balin_color::RESET;
+    }
+}
+
+void balinFailure(const char* str) {
+    std::cout << balin_color::RED << "\t[ERROR] Failure with: " << balin_color::RESET << str << "\r\n";
+}
+
+
+
 //size_t balin_split(const std::string &line, std::vector<std::string> &str, const char delim) {
 //    size_t pos = line.find(delim);
 //    size_t initial_pos = 0;
@@ -18,35 +115,3 @@
 
 //    return str.size();
 //}
-
-
-balin_flags bFlags;
-
-void initFlags() {
-    bFlags.infoFlag = true;
-    bFlags.debugFlag = false;
-}
-
-void balinInfo(const char* str) {
-    if(bFlags.infoFlag) {
-        std::cout << "\t[INFO]: " << str << "\r\n";
-    }
-}
-
-void balinDebug(const char* str) {
-    if(bFlags.debugFlag) {
-        std::cout << "\t[DEBUG]: " << str << "\r\n";
-    }
-}
-
-void balinError(const char* error) {
-    std::cerr<< "\t[ERROR]: " << error << "\r\n";
-}
-
-
-void setInfoFlag(bool value) {
-    bFlags.infoFlag = value;
-}
-void setDebugFlag(bool value) {
-    bFlags.debugFlag = value;
-}

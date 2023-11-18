@@ -47,7 +47,7 @@ ParsedData currentCacheData() {
 
     std::ifstream file("./build/cache.bx");
     if(!file.is_open()) {
-        std::cerr << "\t[ERROR] file did not open is function: 'currentCacheData'\r\n";
+        balinError("File did not open is function: 'currentCacheData'");
     }
     std::string line;
     if(!std::getline(file, line)) {
@@ -68,8 +68,9 @@ ParsedData currentCacheData() {
         if(tmp == 2) {
             assignValueWithIdentifier(curr, parts[0], hash(parts[1].c_str()));
         }
-        
-        std::cout << "\t[DEBUG] " << "Identifier: " << parts[0] << ", IntegerValue: " << parts[1] << "\r\n";
+        std::ostringstream tmp;
+        tmp << "Identifier: " << parts[0] << ", IntegerValue: " << parts[1];
+        balinDebug(tmp);
         
     } 
 
@@ -86,7 +87,7 @@ void writeToCacheFile(const std::string str, unsigned int hashValue) {
         cacheOut.close();
     }
     else {
-        std::cerr << "\t[ERROR] Error opening cache.bx file\r\n";
+        balinError("Error opening cache.bx file");
     }
 }
 
@@ -104,7 +105,7 @@ void assignValueWithIdentifier(ParsedData &pd, const std::string identifier, uns
             pd.includes = value;
             break;
         default :
-            std::cerr << "\t[ERROR] Unknown identifier\r\n";
+            balinError("Unknown identifier: " + identifier);
             break;
     }
 }
@@ -122,7 +123,7 @@ unsigned int getValueWithIdentifier(const std::string identifier) {
                 return currentCache.includes;
                 break;
             default :
-                std::cerr << "\t[ERROR] Unknown identifier\r\n";
+                balinError("Unknown identifier: " + identifier);
                 break;
         }
     return -1;

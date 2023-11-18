@@ -34,7 +34,7 @@ private:
     bool debug_file(const std::string& line);
     bool add_dependency(const std::string& line);
     bool add_library(const std::string& line);
-    std::string resolveString(const std::string& line);
+//    std::string resolveString(const std::string& line);
 
 
     std::ifstream file_;

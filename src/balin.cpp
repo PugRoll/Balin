@@ -53,8 +53,8 @@ bool Balin::compile() {
         std::string command = cmdStream.str();
 
         std::ostringstream minecraft;
-        minecraft << "\nCommand to be executed:\n" << command;
-        balinDebug(minecraft.str().c_str());
+        minecraft << "Executing command: " << command;
+        balinDebug(minecraft);
 
 
         int result = std::system(command.c_str());
@@ -108,13 +108,15 @@ std::string Balin::substituteVars(const std::string input, const std::vector<std
             size_t pos = result.find(variablePlaceholder);
             while(pos != std::string::npos) {
                 std::ostringstream str;
-                str << "\t[Found]: " << variablePlaceholder;
-                balinInfo(str.str().c_str());
+                str << "[Found]: " << variablePlaceholder;
+                balinInfo(str);
+
                 str.clear();
+
                 result.replace(pos, variablePlaceholder.length(), pair.second);
                 pos = result.find(variablePlaceholder);
-                str << "\t[Replacing with]: " << pair.second << "\n";
-                balinInfo(str.str().c_str());
+                str << "[Replacing with]: " << pair.second;
+                balinInfo(str);
             }
         }
         return result;
@@ -137,9 +139,9 @@ void Balin::processFile() {
 
 bool Balin::testCompiler(const std::string& compiler, const std::string lang){
     if(compiler.empty()) {
-        std::ostringstream str;
-        str << "No compiler specified for: " + lang;
-        balinInfo(str.str().c_str());
+        std::string str;
+        str = "No compiler specified for: " + lang;
+        balinError(str);
         return false; //In the case a compiler is not specified
     }
 
@@ -152,9 +154,9 @@ bool Balin::testCompiler(const std::string& compiler, const std::string lang){
     int result = std::system(gamerTime.c_str());
     std::system("rm nul");
     if(result != 0) {
-        std::ostringstream str;
-        str << compiler << " failed to validate compiler\n";
-        balinError(str.str().c_str());
+        std::string str;
+        str =  compiler + " failed to validate compiler";
+        balinError(str);
         return false;
     }
     else {
@@ -282,7 +284,7 @@ bool Balin::checkAgainstDependencyList(const std::string dep) {
         if(id == BALIN_CURL_ERROR) {
             std::ostringstream str;
             str << tokens[0] << "could not be found"; 
-            balinError(str.str().c_str());
+            balinError(str);
             return false;
         }
 

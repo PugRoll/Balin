@@ -7,19 +7,30 @@
 
 int main(int argc, char* argv[]) {
     initFlags();
-    bool debugMode = false;
     std::string filename = "build.bx";
     int opt;
-    while((opt = getopt(argc, argv, "d")) != -1) {
+    while((opt = getopt(argc, argv, "diq")) != -1) {
         switch(opt) {
             case 'd': 
                 setDebugFlag(true);
                 break;
+            case 'i' :
+                setInfoFlag(true);
+                break;
+            case 'q' :
+                // quiet option
+                setDebugFlag(false);
+                setInfoFlag(false);
+                break;
+            default :
+                balinError("Invalid option");
+                return 1;
+
         }
 
     }
-    if(argc > 1 ){
-        filename = argv[1];
+    for (int i = optind; i < argc; ++i) {
+        filename = argv[i];
     }
 
     Balin balin(filename);
@@ -27,11 +38,11 @@ int main(int argc, char* argv[]) {
 
 
     if(balin.compile()) {
+        balinSuccess();
         return 0;
-        std::cout << "SUCCESS\n";
     }
     else {
-        std::cout << "FAILURE\n";
+        balinFailure("Reason for failure unsure");
         return 1;
     }
 

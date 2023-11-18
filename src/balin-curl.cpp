@@ -1,4 +1,5 @@
 #include "../include/balin-curl.hpp"
+#include "../include/balin_common.hpp"
 
 static size_t WriteDataCallback(void* contents, size_t size, size_t nmemb, void* userp) {
     size_t total_size = size * nmemb;
@@ -25,7 +26,7 @@ unsigned int id_getWithName(std::string name){
 
     curl = curl_easy_init();
     if(!curl) {
-        std::cerr << "\t[ERROR]Error initializing curl\r\n";
+        balinError("Error initializing curl");
         return -1;
     }
     std::string response;
@@ -38,7 +39,7 @@ unsigned int id_getWithName(std::string name){
 
     res = curl_easy_perform(curl);
     if(res == CURLE_OK) {
-        std::cout << response << "\r\n";
+        balinInfo(response.c_str());
     }
 
     curl_easy_cleanup(curl);
@@ -46,13 +47,13 @@ unsigned int id_getWithName(std::string name){
     struct wantedData jsonresponse;
 
     if (balinParseJson(name, response, &jsonresponse.id, &jsonresponse.filename)) {
-        std::cout << "Found: " << name << "\r\n";
+        balinInfo(("Found: " + name).c_str());
 //        std::cout << "ID: " <<  jsonresponse.id << "\r\n";
 //        std::cout << "Filename: " <<  jsonresponse.filename << "\r\n";
         return jsonresponse.id;
     }
     else {
-        std::cout << "\t[INFO] " << name << " could not be found\r\n";
+        balinInfo((name + " could not be found").c_str());
         return -1;
     }
     
@@ -65,7 +66,7 @@ void downloadArchiveFromDB(unsigned int id, std::string packageName) {
 
     curl = curl_easy_init();
     if(!curl) {
-        std::cerr << "\t[ERROR]Error initializing";
+        balinError("Error initializing curl");
     }
 
     std::string filename = packageName + ".tar.gz";
@@ -81,12 +82,16 @@ void downloadArchiveFromDB(unsigned int id, std::string packageName) {
 
     res = curl_easy_perform(curl);
     if(res == CURLE_OK) {
-        std::cout << "\t[INFO]: " << filename << " downloaded succesfully\r\n";
+        balinInfo((filename + "downloaded succesfully").c_str());
         moveToBuildDirectory(filename);
     }
     else {
-        std::cerr << "\t[ERROR]: " << filename << " download unsuccesfull\r\n";
-        std::cerr << "\t[ERROR]: curl_easy_perform() failed: " << curl_easy_strerror(res) << "\r\n";
+        std::ostringstream str;
+        str << "\t[ERROR]: " << filename << " download unsuccesfull";
+        balinError(str.str().c_str());
+        str.clear();
+        str << "curl_easy_perform() failed: " << curl_easy_strerror(res);
+        balinError(str.str().c_str());
     }
 
 
@@ -110,11 +115,15 @@ bool balinParseJson(std::string target, std::string response, unsigned int* id, 
                 const Json::Value& curr = root;
 
                 int compareResult = BALIN_CURL_ERROR; //assume we won't find it
+                std::ostringstream str;
     
                 for(int i = 0; i < curr.size(); i++) {                 
                     const Json::Value& currItem = curr[i];
-                    std::cout << "GAMER: " << currItem[0].asInt() << "\r\n";
-                    std::cout << "GAMER NAME: " << currItem[1].asString() << "\r\n";
+                    str << "GAMER: " << currItem[0].asInt();
+                    balinInfo(str.str().c_str());
+                    str.clear();
+                    str << "GAMER NAME: " << currItem[1].asString();
+                    balinInfo(str.str().c_str());
                     compareResult = currItem[1].compare(target);
                     if(compareResult == 0) { 
                         *id = currItem[0].asInt();
@@ -123,12 +132,12 @@ bool balinParseJson(std::string target, std::string response, unsigned int* id, 
                 }
             }
             else {
-                std::cerr << "Json response is empty or not an array\r\n";
+                balinError("Json response is empty or not an array");
                 return false;
             }
         }
         else {
-            std::cerr << "Json parsing failed\r\n";
+            balinError("Json parsing failed");
             return false;
         }
         return false;

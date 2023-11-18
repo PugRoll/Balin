@@ -1,5 +1,6 @@
 #include "../include/balinx_parser.hpp"
 #include "../include/token.hpp"
+#include "../include/balin_common.hpp"
 #include <fstream>
 #include <sstream>
 #include <iostream>
@@ -13,7 +14,7 @@ BalinxParser::BalinxParser(const std::string& filename) : file_(filename), filen
 bool BalinxParser::parse() {
     std::ifstream file = std::ifstream(BalinxParser::get_filename());
     if(!file.is_open()) {
-        std::cerr << "Error: Build file could not be opened\n";
+        balinError("Error: Build file could not be opened");
         return false;
     }
 
@@ -186,7 +187,7 @@ bool BalinxParser::debug_file(const std::string& line) {
         addDebugFlags.push_back(resolveString(tmpFilename));
         return true;
     }
-    std::cerr << "Error in debug_file\n";
+    balinError("Error in debug_file");
     return false;
 }
 
@@ -196,20 +197,6 @@ void BalinxParser::printMessage(const std::string& line) {
     std::cout << resolveString(line) << "\n";
 }
 
-std::string BalinxParser::resolveString(const std::string& line) {
-    size_t last = line.find_last_of("\"");
-    size_t first = line.find("\"");
-    std::string msg = "";
-    if(first != std::string::npos && last != std::string::npos && last > first) {
-        msg = line.substr(first + 1, last - first - 1);
-        return msg;
-        
-    }
-    else {
-        std::cout << "ERROR\n";
-    }
-    return "";
-}
 
 
 bool BalinxParser::add_dependency(const std::string& line) {
@@ -220,7 +207,7 @@ bool BalinxParser::add_dependency(const std::string& line) {
         deps.push_back(resolveString(dep));
         return true;
     }
-    std::cerr << "Error in dependency function\n";
+    balinError("Error in dependency function");
     return false;
 }
 
@@ -233,7 +220,7 @@ bool BalinxParser::add_library(const std::string& line) {
         libs.push_back(resolveString(lib));
         return true;
     }
-    std::cerr << "Error in Library function\n";
+    balinError("Error in Library function");
     return false;
 
 }
