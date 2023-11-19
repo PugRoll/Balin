@@ -87,12 +87,12 @@ void setDebugFlag(bool value) {
 
 void balinSuccess() {
     if(bFlags.infoFlag) {
-        std::cout << balin_color::OKGREEN << "\t[INFO] Success:\r\n" << balin_color::RESET;
+        std::cout << balin_color::OKGREEN << "\t[INFO]: Success:\r\n" << balin_color::RESET;
     }
 }
 
 void balinFailure(const char* str) {
-    std::cout << balin_color::RED << "\t[ERROR] Failure with: " << balin_color::RESET << str << "\r\n";
+    std::cout << balin_color::RED << "\t[ERROR]: Failure with: " << balin_color::RESET << str << "\r\n";
 }
 
 

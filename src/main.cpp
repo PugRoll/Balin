@@ -34,8 +34,6 @@ int main(int argc, char* argv[]) {
     }
 
     Balin balin(filename);
-    balinInfo("HELLO FROM INFO FUNCTION\n");
-
 
     if(balin.compile()) {
         balinSuccess();
@@ -45,9 +43,6 @@ int main(int argc, char* argv[]) {
         balinFailure("Reason for failure unsure");
         return 1;
     }
-
-
-    
     
     
 }
