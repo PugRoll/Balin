@@ -13,6 +13,8 @@ enum class Token{
     Variable,
     Include,
     Library,
+    Before, //tasks
+    After, //tasks 
     Flag,
     Print,
     Debug,

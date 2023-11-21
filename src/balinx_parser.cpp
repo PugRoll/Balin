@@ -31,6 +31,7 @@ bool BalinxParser::parse() {
             bool success = false;
             std::string errorMsg = "";
             Token tk = getTokenValue(token);
+            balinDebug("Current token: " + token);
 
             switch(tk) {
                 case Token::Version :
@@ -65,7 +66,16 @@ bool BalinxParser::parse() {
                     break;
                 case Token::Library :
                     success = add_library(line);
+                    break;
                 //If token is found, assume the Token is unknown
+                case Token::Before: 
+                    success = handle_before_ident(line);
+                    balinDebug("HI FROM Token::Before");
+                    testBefore(beforeTasks);
+                    break;
+                case Token::After : 
+                    success = true;
+                    break;
                 default :
                     break;
 
@@ -223,4 +233,74 @@ bool BalinxParser::add_library(const std::string& line) {
     balinError("Error in Library function");
     return false;
 
+}
+
+
+
+bool BalinxParser::handle_before_ident(const std::string& line) {
+    const char OPEN_BRACE = '{';
+    const char CLOSE_BRACE = '}';
+    bool insideBeforeBlock = false;
+    std::stack<char> braces;
+
+    std::ostringstream open_gamer;
+    open_gamer /*<< "before " */<< OPEN_BRACE;
+
+    std::string ln;
+    std::istringstream iss(line);
+
+    while(std::getline(iss,ln)) {
+       size_t pos = ln.find(open_gamer.str());
+       if(pos != std::string::npos) {
+           insideBeforeBlock = true;
+           braces.push(OPEN_BRACE);
+           ln.erase(pos);
+           if(line.empty()) continue;
+       }
+
+       balinDebug("while loop: " + ln);
+
+       if(insideBeforeBlock) {
+           for(char ch : ln) {
+               if(ch == OPEN_BRACE) {
+                    braces.push(OPEN_BRACE);
+               }
+               else if (ch == CLOSE_BRACE) {
+                   if(!braces.empty() && braces.top() == OPEN_BRACE) {
+                       braces.pop();
+                       if(braces.empty()) {
+                           insideBeforeBlock = false;
+                           //break; //Exit loop, end of block found
+                       }
+                   } 
+                   else {
+                       //Brace mismatch Error
+                       balinError("Brace mismatch Errror LINE:273");
+                       return false;
+                   }
+               }
+           }
+
+           if(insideBeforeBlock) {
+               balinDebug(ln);
+               beforeTasks.push_back(ln);
+           }
+       }
+    }
+
+
+    if(!braces.empty()) {
+        balinError("Brace mismatch error LINE:288");
+        return false;
+    }
+
+    return true;
+}
+
+
+
+void BalinxParser::testBefore(std::vector<std::string> v) {
+    for(const auto& line : v) {
+        balinDebug(line);
+    }
 }

@@ -66,7 +66,7 @@ bool Balin::compile() {
                 return false;
             }
             else {
-                balinError("Command executed successfully");
+                balinInfo("Command executed successfully");
                 //Lets cache if we were successful
                 createCacheFile();
                 writeToCacheFile("cc", hash(parser.get_c_compiler().c_str()));
