@@ -44,6 +44,12 @@ Token getTokenValue(const std::string& token) {
             case hash("library") :
                 result = Token::Library;
                 break;
+            case hash("before") :
+                result = Token::Before;
+                break;
+            case hash("after") :
+                result = Token::After;
+                break;
             default:
                 break;
         }

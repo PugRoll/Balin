@@ -9,7 +9,7 @@ int main(int argc, char* argv[]) {
     initFlags();
     std::string filename = "build.bx";
     int opt;
-    while((opt = getopt(argc, argv, "diq")) != -1) {
+    while((opt = getopt(argc, argv, "dieq")) != -1) {
         switch(opt) {
             case 'd': 
                 setDebugFlag(true);
@@ -21,6 +21,11 @@ int main(int argc, char* argv[]) {
                 // quiet option
                 setDebugFlag(false);
                 setInfoFlag(false);
+                break;
+            case 'e' : //Using 'e' for development purposes
+                setDevDebugFlag(true);
+                setDebugFlag(true);
+                setInfoFlag(true);
                 break;
             default :
                 balinError("Invalid option");

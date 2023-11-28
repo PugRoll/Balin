@@ -57,6 +57,7 @@ bool Balin::compile() {
         balinDebug(minecraft);
 
 
+        doBefore();
         int result = std::system(command.c_str());
 
         //lock for whether I want to compile or not
@@ -66,7 +67,7 @@ bool Balin::compile() {
                 return false;
             }
             else {
-                balinError("Command executed successfully");
+                balinInfo("Command executed successfully");
                 //Lets cache if we were successful
                 createCacheFile();
                 writeToCacheFile("cc", hash(parser.get_c_compiler().c_str()));
@@ -310,3 +311,24 @@ bool Balin::checkWithCache(const std::string curr) {
         ));
 }
 
+bool Balin::doBefore() {
+    balinDevDebug("Called doBefore");
+    std::vector<std::string> tasks = parser.get_before_tasks();
+    std::string curr;
+    const std::string BALIN_PROPERTY = "balin.property";
+    for(const auto& t : tasks) { 
+        size_t pos = t.find(BALIN_PROPERTY);
+        if(pos != std::string::npos) {
+            //We found a property
+            size_t propPos = t.rfind('.');
+            std::string sub = t.substr(propPos + 1);
+            balinDevDebug(sub);
+        }
+        else {
+            //Not a property
+            //Going to assume its a command
+            std::system(t.c_str());
+        }
+    }
+    return true;
+}

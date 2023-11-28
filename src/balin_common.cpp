@@ -2,6 +2,13 @@
 
 
 
+std::fstream& balin_gotoLine(std::fstream& file, unsigned int num) {
+    file.seekg(std::ios::beg);
+    for(int i = 0; i < num - 1; ++i) {
+        file.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    }
+    return file;
+}
 
 
 balin_flags bFlags;
@@ -41,6 +48,12 @@ void balinDebug(const char* str) {
     }
 }
 
+void balinDevDebug(const char* str) {
+    if(bFlags.debugFlag) {
+        std::cout << balin_color::YELLOW <<"\t[DEBUG]: " << balin_color::RESET <<str << "\r\n";
+    }
+}
+
 void balinError(const char* error) {
     std::cerr << balin_color::RED << "\t[ERROR]: " << balin_color::RESET << error << "\r\n";
 }
@@ -57,6 +70,11 @@ void balinDebug(const std::string& str) {
     }
 }
 
+void balinDevDebug(const std::string& str) {
+    if(bFlags.debugFlag) {
+        std::cout << balin_color::YELLOW << "\t[DEBUG]: " << balin_color::RESET << str << "\r\n";
+    }
+}
 void balinError(const std::string& error) {
     std::cerr << balin_color::RED << "\t[ERROR]: " << balin_color::RESET << error << "\r\n";
 }
@@ -68,6 +86,12 @@ void balinInfo(const std::ostringstream& oss) {
 }
 
 void balinDebug(const std::ostringstream& oss) {
+    if(bFlags.debugFlag) {
+        std::cout << balin_color::YELLOW << "\t[DEBUG]: " << balin_color::RESET << oss.str() << "\r\n";
+    }
+}
+
+void balinDevDebug(const std::ostringstream& oss) {
     if(bFlags.debugFlag) {
         std::cout << balin_color::YELLOW << "\t[DEBUG]: " << balin_color::RESET << oss.str() << "\r\n";
     }
@@ -85,9 +109,13 @@ void setDebugFlag(bool value) {
     bFlags.debugFlag = value;
 }
 
+void setDevDebugFlag(bool value) {
+    bFlags.devFlag = value;
+}
+
 void balinSuccess() {
     if(bFlags.infoFlag) {
-        std::cout << balin_color::OKGREEN << "\t[INFO]: Success:\r\n" << balin_color::RESET;
+        std::cout << balin_color::OKGREEN << "\t[INFO]: Success\r\n" << balin_color::RESET;
     }
 }
 
