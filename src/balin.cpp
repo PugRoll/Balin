@@ -72,6 +72,7 @@ bool Balin::compile() {
                 createCacheFile();
                 writeToCacheFile("cc", hash(parser.get_c_compiler().c_str()));
                 writeToCacheFile("cppc", hash(parser.get_cpp_compiler().c_str()));
+                doAfter();
                 return true;
             }
         }
@@ -314,6 +315,28 @@ bool Balin::checkWithCache(const std::string curr) {
 bool Balin::doBefore() {
     balinDevDebug("Called doBefore");
     std::vector<std::string> tasks = parser.get_before_tasks();
+    std::string curr;
+    const std::string BALIN_PROPERTY = "balin.property";
+    for(const auto& t : tasks) { 
+        size_t pos = t.find(BALIN_PROPERTY);
+        if(pos != std::string::npos) {
+            //We found a property
+            size_t propPos = t.rfind('.');
+            std::string sub = t.substr(propPos + 1);
+            balinDevDebug(sub);
+        }
+        else {
+            //Not a property
+            //Going to assume its a command
+            std::system(t.c_str());
+        }
+    }
+    return true;
+}
+
+bool Balin::doAfter() {
+    balinDevDebug("Called doAfter");
+    std::vector<std::string> tasks = parser.get_after_tasks();
     std::string curr;
     const std::string BALIN_PROPERTY = "balin.property";
     for(const auto& t : tasks) { 

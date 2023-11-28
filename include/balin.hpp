@@ -96,6 +96,7 @@ private:
     bool doCompile;
 
     bool doBefore();
+    bool doAfter();
 
     /*************************************************************************************
      * Variables:

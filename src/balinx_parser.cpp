@@ -78,9 +78,14 @@ bool BalinxParser::parse() {
                     testBefore(beforeTasks);
                     break;
                 }
-                case Token::After : 
-                    success = true;
+                case Token::After : { 
+                    std::fstream f(BalinxParser::get_filename());
+                    balin_gotoLine(f, currLine);
+                    std::string afterLine;
+                    std::getline(f, afterLine);
+                    success = handle_after_ident(afterLine);
                     break;
+                }
                 //If token is found, assume the Token is unknown
                 default :
                     break;
@@ -241,16 +246,14 @@ bool BalinxParser::add_library(const std::string& line) {
 
 }
 
-
-
-bool BalinxParser::handle_before_ident(const std::string& line) {
+void BalinxParser::parseBraces(std::vector<std::string>& tasks, const std::string& line, const char* beforeOrAfter) {
     const char OPEN_BRACE = '{';
     const char CLOSE_BRACE = '}';
     bool insideBeforeBlock = false;
     std::stack<char> braces;
 
     std::ostringstream open_gamer;
-    open_gamer << "before " << OPEN_BRACE;
+    open_gamer << beforeOrAfter << " " << OPEN_BRACE;
 
     std::string ln;
     std::fstream f = std::fstream(BalinxParser::get_filename());
@@ -280,23 +283,29 @@ bool BalinxParser::handle_before_ident(const std::string& line) {
                    else {
                        //Brace mismatch Error
                        balinError("Brace mismatch Errror LINE:273");
-                       return false;
                    }
                }
            }
 
            if(insideBeforeBlock) {
-               beforeTasks.push_back(ln);
+               tasks.push_back(ln);
            }
        }
     }
 
     if(!braces.empty()) {
         balinError("Brace mismatch error LINE:288");
-        return false;
     }
+}
 
-    return true;
+bool BalinxParser::handle_before_ident(const std::string& line) {
+    parseBraces(beforeTasks, line, "before");
+    return beforeTasks.empty();
+}
+
+bool BalinxParser::handle_after_ident(const std::string& line) {
+    parseBraces(afterTasks, line, "after");
+    return beforeTasks.empty();
 }
 
 

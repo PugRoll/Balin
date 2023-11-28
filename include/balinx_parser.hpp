@@ -23,6 +23,7 @@ public:
     const std::vector<std::string>& get_deps() const {return deps; }
     const std::vector<std::string>& get_libs() const {return libs; }
     const std::vector<std::string>& get_before_tasks() const { return beforeTasks; }
+    const std::vector<std::string>& get_after_tasks() const { return afterTasks; }
 private: 
     bool handle_version(const std::string& line);
     bool handle_executable(const std::string& line);
@@ -37,6 +38,9 @@ private:
     bool add_library(const std::string& line);
     bool handle_before_ident(const std::string& line);
     bool handle_after_ident(const std::string& line);
+
+    void parseBraces(std::vector<std::string>& tasks, const std::string& line, const char* beforeOrAfter);
+
 //    std::string resolveString(const std::string& line);
 
 
