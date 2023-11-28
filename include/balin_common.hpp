@@ -3,6 +3,8 @@
 #include <iostream>
 #include <vector>
 #include <sstream>
+#include <limits>
+#include <fstream>
 
 /**
  * Terminal colors
@@ -14,6 +16,9 @@ namespace balin_color {
     const std::string YELLOW = "\033[093m";
     const std::string OKBLUE = "\033[094m";
 }
+
+
+std::fstream& balin_gotoLine(std::fstream& file, unsigned int num);
 
 
 
@@ -37,6 +42,7 @@ constexpr unsigned int hash(const char* str)  {
 struct balin_flags {
     bool infoFlag;
     bool debugFlag;
+    bool devFlag;
 } extern bFlags;
 
 /**
@@ -68,6 +74,15 @@ void balinInfo(const char* str);
  */
 void balinDebug(const char* str);
 
+
+/**
+ * Functionality: Print out some string, beginning with a yellow: "[DEBUG]:" tag
+ * Notes: For development use
+ * @Param: char* str: string to print out
+ */
+
+void balinDevDebug(const char* str);
+
 /**
  * Functionality: Print out some string, beginning with a red: "[ERROR]:" tag
  * @Param: char* error : string to print out
@@ -87,6 +102,14 @@ void balinInfo(const std::string& str);
  * @Param: string str: string to print out
  */
 void balinDebug(const std::string& str);
+
+/**
+ * Functionality: Print out some string, beginning with a yellow: "[DEBUG]:" tag
+ * Notes: Overloaded balinDevDebug function
+ * Notes: For development use
+ * @Param: string str: string to print out
+ */
+void balinDevDebug(const std::string& str);
 
 /**
  * Functionality: Print out some string, beginning with a red: "[ERROR]:" tag
@@ -115,11 +138,20 @@ void balinDebug(const std::ostringstream& str);
  * Notes: Overloaded balinError function
  * @Param: ostringstream error: error to print out
  */
-
 void balinError(const std::ostringstream& error);
+
+/**
+ * Functionality: Print out some string, beginning with a yellow: "[DEBUG]:" tag
+ * Notes: Overloaded balinDevDebug function
+ * Notes: For development use
+ * @Param: ostringstream str: string to print out
+ */
+void balinDevDebug(const std::ostringstream& str);
+
 
 void setInfoFlag(bool value);
 void setDebugFlag(bool value);
+void setDevDebugFlag(bool value);
 
 void initFlags();
 

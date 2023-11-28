@@ -22,6 +22,7 @@ public:
     const std::vector<std::string>& get_debugs() const {return addDebugFlags; }
     const std::vector<std::string>& get_deps() const {return deps; }
     const std::vector<std::string>& get_libs() const {return libs; }
+    const std::vector<std::string>& get_before_tasks() const { return beforeTasks; }
 private: 
     bool handle_version(const std::string& line);
     bool handle_executable(const std::string& line);
