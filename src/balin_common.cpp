@@ -49,7 +49,7 @@ void balinDebug(const char* str) {
 }
 
 void balinDevDebug(const char* str) {
-    if(bFlags.debugFlag) {
+    if(bFlags.devFlag) {
         std::cout << balin_color::YELLOW <<"\t[DEBUG]: " << balin_color::RESET <<str << "\r\n";
     }
 }
@@ -71,7 +71,7 @@ void balinDebug(const std::string& str) {
 }
 
 void balinDevDebug(const std::string& str) {
-    if(bFlags.debugFlag) {
+    if(bFlags.devFlag) {
         std::cout << balin_color::YELLOW << "\t[DEBUG]: " << balin_color::RESET << str << "\r\n";
     }
 }
@@ -92,7 +92,7 @@ void balinDebug(const std::ostringstream& oss) {
 }
 
 void balinDevDebug(const std::ostringstream& oss) {
-    if(bFlags.debugFlag) {
+    if(bFlags.devFlag) {
         std::cout << balin_color::YELLOW << "\t[DEBUG]: " << balin_color::RESET << oss.str() << "\r\n";
     }
 }

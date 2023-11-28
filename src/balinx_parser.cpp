@@ -252,14 +252,14 @@ void BalinxParser::parseBraces(std::vector<std::string>& tasks, const std::strin
     bool insideBeforeBlock = false;
     std::stack<char> braces;
 
-    std::ostringstream open_gamer;
-    open_gamer << beforeOrAfter << " " << OPEN_BRACE;
+    std::ostringstream open;
+    open << beforeOrAfter << " " << OPEN_BRACE;
 
     std::string ln;
     std::fstream f = std::fstream(BalinxParser::get_filename());
 
     while(std::getline(f,ln)) {
-       size_t pos = ln.find(open_gamer.str());
+       size_t pos = ln.find(open.str());
        if(pos != std::string::npos) {
            insideBeforeBlock = true;
            braces.push(OPEN_BRACE);

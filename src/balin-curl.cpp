@@ -97,7 +97,7 @@ void downloadArchiveFromDB(unsigned int id, std::string packageName) {
 
 
 
-    out_file.close(); //good practice for the gamers
+    out_file.close(); 
 
 }
 
@@ -119,10 +119,10 @@ bool balinParseJson(std::string target, std::string response, unsigned int* id, 
     
                 for(int i = 0; i < curr.size(); i++) {                 
                     const Json::Value& currItem = curr[i];
-                    str << "GAMER: " << currItem[0].asInt();
+                    str << "Package: " << currItem[0].asInt();
                     balinInfo(str.str().c_str());
                     str.clear();
-                    str << "GAMER NAME: " << currItem[1].asString();
+                    str << "Package name: " << currItem[1].asString();
                     balinInfo(str.str().c_str());
                     compareResult = currItem[1].compare(target);
                     if(compareResult == 0) { 

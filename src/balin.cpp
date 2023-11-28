@@ -20,6 +20,7 @@ bool Balin::compile() {
     if(setVars()) {
         //Go ahead and create the build directory
         createBuildDirectory();
+        doBefore();
         bool doCompile = false;
 
         ParsedData cacheData = currentCacheData();
@@ -36,8 +37,8 @@ bool Balin::compile() {
             cmdStream << "-I " << substituteVars(include, parser.get_variables());
         }
 
-        for (const std::string& minecrafters: debugs) {
-            cmdStream << " -g " << substituteVars(minecrafters, parser.get_variables());
+        for (const std::string& debug: debugs) {
+            cmdStream << " -g " << substituteVars(debug, parser.get_variables());
         }
 
 
@@ -52,12 +53,11 @@ bool Balin::compile() {
 
         std::string command = cmdStream.str();
 
-        std::ostringstream minecraft;
-        minecraft << "Executing command: " << command;
-        balinDebug(minecraft);
+        std::ostringstream ostr;
+        ostr << "Executing command: " << command;
+        balinDebug(ostr);
 
 
-        doBefore();
         int result = std::system(command.c_str());
 
         //lock for whether I want to compile or not
@@ -151,9 +151,9 @@ bool Balin::testCompiler(const std::string& compiler, const std::string lang){
 
     cmd << compiler << " --version";
 
-    std::string gamerTime = cmd.str();
-    gamerTime = gamerTime + " > nul";
-    int result = std::system(gamerTime.c_str());
+    std::string cmdStr = cmd.str();
+    cmdStr = cmdStr + " > nul";
+    int result = std::system(cmdStr.c_str());
     std::system("rm nul");
     if(result != 0) {
         std::string str;
@@ -302,7 +302,7 @@ bool Balin::checkAgainstDependencyList(const std::string dep) {
 
 void Balin::unzipArchive(const char* depName) {
     std::ostringstream cmd;
-    cmd << "tar -xzvf ./build/" << depName << ".tar.gz " << "-C ./build/";
+    cmd << "tar -xzf ./build/" << depName << ".tar.gz " << "-C ./build/";
     std::system(cmd.str().c_str());
 }
 
