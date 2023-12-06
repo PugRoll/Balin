@@ -1,5 +1,4 @@
 $home /home/Patrick/dev/balin
-$debugThis /home/Patrick/dev/balin
 
 cc "gcc"
 cppc "g++" 

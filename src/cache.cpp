@@ -70,7 +70,7 @@ ParsedData currentCacheData() {
         }
         std::ostringstream tmp;
         tmp << "Identifier: " << parts[0] << ", IntegerValue: " << parts[1];
-        balinDebug(tmp);
+        balinDevDebug(tmp);
         
     } 
 
@@ -105,7 +105,7 @@ void assignValueWithIdentifier(ParsedData &pd, const std::string identifier, uns
             pd.includes = value;
             break;
         default :
-            balinError("Unknown identifier: " + identifier);
+            //balinError("Unknown identifier: " + identifier);
             break;
     }
 }
@@ -123,7 +123,7 @@ unsigned int getValueWithIdentifier(const std::string identifier) {
                 return currentCache.includes;
                 break;
             default :
-                balinError("Unknown identifier: " + identifier);
+                //balinError("Unknown identifier: " + identifier);
                 break;
         }
     return -1;
