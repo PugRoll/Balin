@@ -67,7 +67,7 @@ bool Balin::compile() {
                 return false;
             }
             else {
-                balinInfo("Command executed successfully");
+                balinDebug("Command executed successfully");
                 //Lets cache if we were successful
                 createCacheFile();
                 writeToCacheFile("cc", hash(parser.get_c_compiler().c_str()));
@@ -111,14 +111,14 @@ std::string Balin::substituteVars(const std::string input, const std::vector<std
             while(pos != std::string::npos) {
                 std::ostringstream str;
                 str << "[Found]: " << variablePlaceholder;
-                balinInfo(str);
+                balinDevDebug(str);
 
                 str.clear();
 
                 result.replace(pos, variablePlaceholder.length(), pair.second);
                 pos = result.find(variablePlaceholder);
                 str << "[Replacing with]: " << pair.second;
-                balinInfo(str);
+                balinDevDebug(str);
             }
         }
         return result;
@@ -201,7 +201,7 @@ bool Balin::finalCheck() {
 void Balin::createBuildDirectory() {
    const char* dir = "./build"; 
    if(checkBuildDirectory()) {
-       balinInfo("Valid path");
+       balinDevDebug("Valid path");
    }
    else {
        //If the directory does not exists let's create the directory
