@@ -43,6 +43,7 @@ bool Balin::compile() {
 
 
         for (const std::string& dep : deps) {
+            balinDevDebug("Dependency: " + dep);
             cmdStream << " ./build/" << dep << ".o";
         }
         cmdStream << " -" << flags[1] << " " << executable;
@@ -239,66 +240,17 @@ bool Balin::checkForCacheFile() {
 bool Balin::checkDependencies() {
     //We should check for the object file in the build directory, if it doesn't exist
     //we should get if available
+    unsigned int id;
     for(std::string dep : deps) {
-        if(checkAgainstDependencyList(dep)) {
-            return true;
-        }
+           id = id_getWithName(dep); 
+
+           downloadArchiveFromDB(id, dep);
+           unzipArchive(dep.c_str());
     }
 
     
    return false;
 }
-
-
-
-bool Balin::checkAgainstDependencyList(const std::string dep) {
-    std::ifstream file = std::ifstream("/home/Patrick/.balin/balinDeps.txt");
-    std::string line;
-    std::string curr;
-
-    unsigned int hashLine;
-    unsigned int hashDep = hash(dep.c_str());
-
-    std::vector<std::string> tokens;
-
-    const char delimeter = ':';
-
-    while(std::getline(file, line)) {
-        if(line.empty()) {
-            balinError("Dependency was not found");
-            return false;
-        }
-
-        std::istringstream iss(line);
-        std::string str;
-        while(getline(iss, str, delimeter)) {
-            tokens.push_back(str);        
-            /* Name of token is located at tokens[0]
-             * Location of token is located at tokens[1] */
-        }
-
-        //TODO: ADD proper functionality to this
-        //TODO: Check for valid dependency
-        //Copy the object file from the directory
-        //tokens[0] is the name of the dependency
-        unsigned int id = id_getWithName(tokens[0]);
-
-        if(id == BALIN_CURL_ERROR) {
-            std::ostringstream str;
-            str << tokens[0] << "could not be found"; 
-            balinError(str);
-            return false;
-        }
-
-        downloadArchiveFromDB(id, tokens[0]);
-        unzipArchive(tokens[0].c_str());
-
-    }
-
-
-    return false;
-}
-
 
 void Balin::unzipArchive(const char* depName) {
     std::ostringstream cmd;

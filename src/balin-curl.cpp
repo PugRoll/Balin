@@ -39,7 +39,7 @@ unsigned int id_getWithName(std::string name){
 
     res = curl_easy_perform(curl);
     if(res == CURLE_OK) {
-        balinInfo(response.c_str());
+        balinDevDebug(response.c_str());
     }
 
     curl_easy_cleanup(curl);
@@ -47,13 +47,13 @@ unsigned int id_getWithName(std::string name){
     struct wantedData jsonresponse;
 
     if (balinParseJson(name, response, &jsonresponse.id, &jsonresponse.filename)) {
-        balinInfo(("Found: " + name).c_str());
+        balinDebug(("Found: " + name).c_str());
 //        std::cout << "ID: " <<  jsonresponse.id << "\r\n";
 //        std::cout << "Filename: " <<  jsonresponse.filename << "\r\n";
         return jsonresponse.id;
     }
     else {
-        balinInfo((name + " could not be found").c_str());
+        balinError((name + " could not be found").c_str());
         return -1;
     }
     
@@ -82,7 +82,7 @@ void downloadArchiveFromDB(unsigned int id, std::string packageName) {
 
     res = curl_easy_perform(curl);
     if(res == CURLE_OK) {
-        balinInfo((filename + "downloaded succesfully").c_str());
+        balinDebug((filename + "downloaded succesfully").c_str());
         moveToBuildDirectory(filename);
     }
     else {
@@ -120,10 +120,10 @@ bool balinParseJson(std::string target, std::string response, unsigned int* id, 
                 for(int i = 0; i < curr.size(); i++) {                 
                     const Json::Value& currItem = curr[i];
                     str << "Package: " << currItem[0].asInt();
-                    balinInfo(str.str().c_str());
+                    balinDevDebug(str.str().c_str());
                     str.clear();
                     str << "Package name: " << currItem[1].asString();
-                    balinInfo(str.str().c_str());
+                    balinDevDebug(str.str().c_str());
                     compareResult = currItem[1].compare(target);
                     if(compareResult == 0) { 
                         *id = currItem[0].asInt();

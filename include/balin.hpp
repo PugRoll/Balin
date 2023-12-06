@@ -84,11 +84,6 @@ private:
      */
     bool checkDependencies();
 
-    /**
-     * Functionalilty: run through the dependency list, make sure it is valid dependency
-     */
-    bool checkAgainstDependencyList(const std::string dep);
-
 
     /**
      * Functionalilty: perform compilation
